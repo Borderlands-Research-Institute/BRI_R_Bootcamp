@@ -1,0 +1,261 @@
+\documentclass{article}
+%%%-----------------------%%%
+%%% My First LaTeX thing! %%%
+%%%-----------------------%%%
+
+
+%%% Here begins the preamble!
+
+% The preamble is where you specify packages and
+% typesetting options in a LaTeX document. It is
+% where LaTeX says "Ok, what tools will I need for 
+% this job?". Once you get to begin{document} ,the 
+% the work has started and you can't go back for 
+% tools.
+
+% Here is an example of using a package
+\usepackage{amsmath}  % Extends math type setting
+\usepackage{geometry}[margin = 1in] % Change page layout
+\usepackage{natbib} % Package for nice bibliography
+  \setcitestyle{citesep={,},aysep={}}
+  % The options above are poorly documented in external package help
+  % There cannot be spaces between arguments in the current version
+  % of natbib. It's a bit finicky.
+   \bibliographystyle{jwm} % This references the jwm.bst file
+                           % .bst means "bibliography style"
+                           % This must be in the working directory
+                           
+%%% Here ends the preamble!
+\begin{document}
+
+\title{Modernizing Wildlife Science: Get Reproducible!}
+\author{Jane Q. Doe  \and John Q. Public \and Justin T. French}
+\maketitle
+
+\section*{Abstract}
+
+This document is an example of how to work in \LaTeX{}, integrating it with R to produce a fully reproducible manuscript. This will turn this very script into a one-stop-shop for managing and cleaning data, analyzing those data, generating graphics, and incorporating them into a publication-grade paper.
+
+The basic structure of \LaTeX{} commands are as follows:
+\begin{itemize}
+  \item{All \LaTeX{} commands begin with a backslash and followed with the command name with no space.}
+
+  \item{Where R uses parenthesis for everything, \LaTeX{} uses curly braces. Where R uses square brackets for indexing, \LaTeX{} uses them to set options of packages.}
+\end{itemize}
+
+\noindent Everything else can be inferred from what you see in this script\footnote{We'll point it out with comments along the way.}. However, a final thing to note is any time you make a special environment with a \texttt{\textbackslash begin{}} command, you must close it properly with an \texttt{\textbackslash end{}} command.
+
+\section{Introduction}
+
+%%% Paragraph 1: Introduce the big picture %%%--------
+
+All of the ``soft" sciences\footnote{Note the use of accents in the script for opening quotes.} are in the cross-hairs of a credibility crisis. This is most evident in the fields of psychology and sociology, but has arrived in ecology too. If you haven't heard of this, Google ``Pruitgate ecology" and learn all about the lurid world of jumping spider researchers. In broad terms, the credibility crisis stems from an inability of researchers to reproduce their results from a study using the original data, much less replicate it with new data. In scrutinizing fields where replication is arguably impossible, scientists quickly found that many landmark studies could not be independently verified and those that could often did not produce the advertised result. This has led to a mass witch hunt in psychology and identified many unscrupulous researchers in the process. Modern scientific practice is rapidly shifting towards a standard of reproducibility.
+
+%%% Paragraph 2: Introduce why LaTeX helps %%%--------
+
+So why \LaTeX{}? Because it is a global standard typesetting language that has been around since at least 1980's that is well-documented. Several developers have picked it up and built interface for it with R. The fact that both are open-source and play well (relatively) with other languages makes them a powerful combination for the scientist that wants to make the most of a single work interface; it allows R to be the one Ring that rules them all. It is not the only option, as you've already seen. We were able to make reproducible documents easily with Rmarkdown. However, it is actually harder to customize the formatting in Rmarkdown than it is in \LaTeX{} because it requires understanding html, and css, and markdown itself, and it interferes with itself routinely. Integrating with \LaTeX{} just requires learning \LaTeX{}. It's harder at first, but it's easier in the long run. Fun fact, Rmarkdown also require \LaTeX{} to make PDFs, and uses \LaTeX{} syntax for most special things, like writing equations. Basically, you're learning a little \LaTeX{} either way.
+
+%%% Paragraph 3: Nice specific features %%%-----------
+
+There are few nice things to make a note of about \LaTeX{}. While initial setup is sometimes difficult, once it working it's easy \citep{archEtAl21, einstein23}. Part of the reason it is easy is he adoption of a package system. This is what makes R so flexible, and it does the same for \LaTeX{}. The command structure is simple, consistent, and explicit (at least for an end user). A big advantage is \LaTeX's ability to utilize a style file (.sty) as a template. Many journals offer \LaTeX{} templates for their preferred formatting. Some are actual .tex files, but some are packaged. When they are packaged, it makes changing paper formatting as easy as changing one package name. Even when they are not packaged, all you have to do is paste the body of the document in the template and change options in the preamble. It takes minutes.
+
+%%% Paragraph 4: Frame the example %%%----------------
+
+But, before I totally get on the pulpit, let's see what it actually looks like to integrate the data management, analysis, graphics generation, and writing into a single workflow. We will  analyze an ecological data set from the internet with a linear model, then generate all of our summary statistics, graphics, and other outputs within the script. We will build in an error early on, which we will ``find" in the editing process to demonstrate how easy this makes that.
+
+%%% Paragraph 5: State objectives Hypo's etc. %%%-----
+
+Our objective is to show all of the essential \LaTeX{} tools to produce a full manuscript and give you a template example of how to integrate several different languages and packages in one place to accomplish... everything. I hypothesize you will come to the dark side and frustrate all the Office addicts you work with, despite the lifetime of debugging this entails.
+
+\section{Methods}
+
+%%% Paragraph 1: Study site %%%-------------------------
+
+%%% You can control font facing in text with textXX{} commands. The XX can
+%%% be replaced with it for italics (see below), bf for bold-face, or tt for
+%%% typewriter case.
+
+Data collection focused on eastern Middle Earth, slightly southwest of Morhia. Soils were charred and calcareous, with high concentrations of phosphorus. Most of the landscape is permanently on fire. Common species include orcs (\textit{Stupidus sunburnus}), goblins (\textit{S. livedownholes}), and hobbits (\textit{Podus pilosus}). Common land uses include pillaging, highway robbery, questing, and Ent logging.
+
+%%% Paragraph 2: Sampling procedures %%%----------------
+
+We collected data remotely due to the the high risk of travelling to imaginary places. Data were ``borrowed" from the internet and assumed to represent the system well. Apparently, we sampled the abundance of 5 grass species across a pyric gradient throughout the study site. We recorded the abundance of individual plants within 48 randomly located 50 x 50m plots and that's really all there is to it.
+
+<<echo=FALSE, warning=FALSE, message=FALSE>>=
+
+  # Read file from interwebs
+  dat.grass <- 
+    read.delim('http://www.davidzeleny.net/anadat-r/data-download/grasslands-spe.txt',
+                row.names = 1)
+
+  # Limit to 5 columns to satisfy stats gods.
+  dat.grass <-
+    dat.grass[,c("Polytrichum.piliferum_9",
+                 "Scleranthus.perennis_6",
+                 "Poa.bulbosa_6",
+                 "Cladonia.species_9",
+                 "Jasione.montana_6")]
+  
+@
+
+%%% Paragraph 3: Statsy-stats %%%----------------------
+
+%%% The texttt{} command is for making text typewritter case. This is not a 
+%%% font change in LaTeX, it is ust like itilicizing or bold-facing. 
+
+We examined associations among the 5 target species using principal components analysis (PCA). This analysis quantifies the correlation structure among a set of variables to identify different component plant communities that are positively or negatively associated with each other. At least, that's how the plant people do. We used the \texttt{prcomp()} function in the R \texttt{stats} package to perform PCA via singular value decomposition, which is more precise at small sample size.
+<<echo=FALSE, warning=FALSE, message=FALSE,cache=TRUE>>=
+
+  mod.pca <- 
+    prcomp(dat.grass)
+  
+@
+
+%%% Paragraph 4: How will we interpret? %%%------------
+
+We interpreted plant associations graphically using biplots in Type 2 scaling, highlighting associations among the species. We examined the number of meaningful principal components based on the proportion of variance captured using scree plots. Finally, we examined whether there was evidence of distinct plant grass communities in the study area with complete linkage clustering, utilizing Euclidean distance.
+<<echo=FALSE, warning=FALSE, message=FALSE>>=
+
+  dat.dist <- 
+    dist(dat.grass,
+         method = 'euclidean')
+  
+  mod.clust <-
+    hclust(dat.dist,
+           method = 'complete')
+  
+@
+
+\section{Results}
+
+<<eval=FALSE, echo=FALSE>>=
+
+  install.packages('factoextra')
+  
+@
+
+%%% Paragraph 1: PCA results %%%-----------------------
+
+<<echo=FALSE, warning=FALSE, message=FALSE>>=
+
+  library(factoextra)
+  
+  sum.pca <- summary(mod.pca)
+  
+  varD2 <-
+    round(sum.pca$importance[3,2]*100, 
+          digits = 1)
+@  
+ 
+%%% The Sexpr{} command stands for S expression, and 
+%%% it allows you to run R code in-line, see below for use:
+ 
+We captured \Sexpr{varD2}\% of the variability in grass communities in the first 2 principal components (Table \ref{tab:scree}). This allowed us to safely interpret community structure in 2 dimensions.  
+
+%%% Paragraph 2: Biplot %%%------------------------------
+
+%%% The ref{} command allows you to insert a reference to a figure, table, 
+%%% or any other named thing you make in the document. We'll demonstrate 
+%%% how to use it on figures here:
+
+The biplot of our PCA revealed 2 major gradients in the variation of grass abundance across the area (Figure \ref{fig:biplot}). The first principal component was dominated by the abundance of \textit{Polytrichum pilosum}. The second principal component was dominated by \textit{Poa bulbosa} and \textit{Scleranthus perennis}, which were positively associated with each other. Their abundance appeared independent of that of \textit{P. pilosum}.
+
+%%% Paragraph 3: Clustering %%%--------------------------
+
+Complete linkage clustering revealed a high degree of consistency across vegetation plot with no evident groupings to indicate the existence of distinct grass communities (Figure \ref{fig:dendro})
+
+\section{Discussion}
+
+%%% Paragraph 1: Major take home %%%---------------------
+
+We found no evidence of distinct plant communities in Mordor. However, there were two gradients in the grass species that revealed distinct influences of \textit{P. pilosum} compared two the positively associated \textit{P. bulbosa} and \textit{S. perennis}. This indicates a rather simple vegetation community in the land of Sauron.
+
+%%% Paragraph 2: What doe it MEAN? %%%-------------------
+
+Given the extent of constant burnination in the area, this is not surprising as fire tends to consume most vegetation. Literature suggests that fire could be beneficial to grass communities, provided it at some point goes out \citep{smithEtAl02}.
+
+\subsection*{Acknowledgements}
+
+We would like to thank our funders Mister and Misses Casper C. Ghost. Special thanks to B. Baggins and Boromir of Gondor for assistance in data collection and orc repelling services. Y'all were a great distraction. All work was conducted under permit by the Department of Imaginary Services, Permit Number -37.
+
+\break
+
+%\section{Literature Cited}
+
+\bibliography{exampleBib}
+
+
+
+\break
+
+\section{Tables and Figures}
+
+<<echo=FALSE, eval=FALSE>>=
+  install.packages('xtable')
+@
+
+<<echo=FALSE, warning=FALSE, results='asis'>>=
+    
+  library(xtable)
+  
+  screeTab <- 
+    xtable(sum.pca$importance,
+           caption = 'Individual and cumulative proportions of variance \\ captured by each principal component.',
+           label = 'tab:scree')
+  
+  print.xtable(screeTab, 
+               caption.placement = 'top',
+               caption.width = '3.7in')
+  
+  
+@
+
+% \break
+% 
+% \begin{figure}[h] % The option forces the fig to be here
+%   \begin{center}
+<<echo=FALSE, fig.width=5, fig.height=2.5, eval=FALSE>>=  
+   
+   screeplot(mod.pca, 
+        main = 'Scree Plot of Principal Components')
+@
+% \caption{Screeplot of our principal components analysis of grass community structure. Each bar shows the variance captured by each principal component. The first two principal components captured \Sexpr{varD2}\% of the total variance.}
+% \label{fig:scree}
+%   \end{center}
+% \end{figure}
+
+\break %%% This command does a simple page break
+
+\begin{figure}[h]
+<<echo=FALSE, warning=FALSE, message=FALSE, fig.width=5, fig.height=4, fig.align='center'>>= 
+  
+  # Get percent in PC1
+  pc1 <- round(sum.pca$importance[2,1]*100,
+               digits = 1)
+  # Get percent in PC2
+  pc2 <- round(sum.pca$importance[2,2]*100,
+               digits = 1)
+  
+  factoextra::fviz_pca_biplot(mod.pca)
+  
+@
+\caption{Biplot of principal components analysis in Type 2 scaling. The first principal component captured \Sexpr{pc1}\% of the variance, while the second captured \Sexpr{pc2}\%.}
+\label{fig:biplot}
+\end{figure}
+
+\newpage %%% This command breaks the page and clears formatting.
+           % It undoes special formatting commands
+
+\begin{figure}[h]
+  \begin{center}
+<<echo=FALSE, warning=FALSE, message=FALSE, fig.width=5, fig.height=4>>=
+
+  plot(mod.clust)
+  
+@
+\caption{There ain't no groups boss.}
+\label{fig:dendro}
+  \end{center}
+\end{figure}
+
+\end{document}

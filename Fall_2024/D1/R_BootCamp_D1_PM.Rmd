@@ -1,0 +1,324 @@
+---
+title: "R_BootCamp_D1_PM"
+author: "Justin French"
+date: "`r Sys.Date()`"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Functions
+
+## Functions
+
+We talked about R objects this morning; how to make them, how they are structured, a little about how to manipulate them, and some object methods. The other half of the coin in R is **functions**.
+
+Functions take objects as inputs (usually) and return another object as an output. These are how we manipulate objects in the object-oriented framework.
+
+## An Example: Part 1
+
+You have already seen several functions in the process of making objects. However, did we feed those functions objects?
+
+Yes. However, there are way more interesting functions than just the object constructors and methods we used this morning.
+
+## An Example: Part 2
+
+Here is an example of a function that returns a distilled product of another object; it's called `mean()`. We'll use the `read.csv()` function to read in the data frame that we made earlier, then get the average shoe size of people in the room in Alpine:
+
+```{r}
+
+  dat.fun <- read.csv('funData.csv')
+
+  # What column do we need?
+  dat.fun$shoeSize
+
+```
+
+## An Example: Part 3
+
+Now that we have the data, let's use the `?` operator (which is a function) to view the help page for the `mean()` function:
+
+```{r eval=FALSE}
+
+  ?mean
+
+```
+
+All functions from published packages have help pages like this. They will describe the function's purpose, list the arguments of the function, explain the arguments and outputs, and show some examples.
+
+## An Example: Part 4
+
+The mean function only requires a vector of values for which an arithmetic mean makes sense. Our column of shoe sizes fits the bill:
+
+```{r}
+
+  meanShoe <-
+    mean(dat.fun$shoeSize)
+
+```
+
+## An Example: Part 5
+
+What kind of object is the output?
+
+```{r}
+
+  is.vector(meanShoe)
+
+  is.matrix(meanShoe)
+
+  is.data.frame(meanShoe)
+
+  is.list(meanShoe)
+    
+```
+
+## Arguments 
+
+All functions that require an input have arguments that the user can specify. These are the main focus of the help pages.
+
+Arguments change the behavior of a function and dictate what the outcome will be. It is very important to make sure that you understand what the arguments require and what they do to the result.
+
+The `matrix()` and the `write.csv()` function both had simple arguments that fundamentally change the output. It is the user's responsibility to understand the function's arguments.
+
+## For the Sake of Argument
+
+For example, let's see exactly what changing a single argument can do to the output of another function. We're gonna add a row to our data frame, but it will have a missing value. We'll then take the mean of that variable to see the importance of arguments:
+
+```{r}
+  
+  # Use rbind() to bind a new row to dat.fun
+  dat.fun <- rbind(dat.fun,
+              data.frame(name = 'Lt. Dan',
+                         shoeSize = NA,
+                         age = 55,
+                         likeCats = FALSE))
+
+```
+
+## For the Sake of Argument, Con't.
+
+We'll now calculate the mean shoe size, but pay attention to the function arguments and the output:
+```{r}
+
+  mean(dat.fun$shoeSize)
+
+  mean(dat.fun$shoeSize, na.rm = TRUE)
+
+```
+The fact that not specifying an argument in the first line caused a problem is an example of dangerous **default** argument values.
+
+## Defaults
+
+The vast majority of R functions have default values plugged into the arguments by the programmers. This makes it so you can get away with lazy coding. **Lazy coding** is where you are not required to explicitly set all arguments to every function you use. This is handy, but dangerous.
+
+Fortunately, the help pages of all decent packages show you what the default arguments are set to.
+
+# Packages
+
+## Packages
+
+The beauty of R is that it can do anything. This ranges from statistical analysis, GIF generation, mapping, building websites, to ordering pizza (if you have a Dominoes). 
+
+This is possible because literally thousands of programmers package their code and share it out of the goodness of their hearts/their lust for citations for *free*.
+
+## Where to get packages?
+
+R has a support system called the Comprehensive R Archive Network (CRAN). You can download packages from CRAN directly from R using the `install.packages()` function!
+
+Say we want to do occupancy modelling in R and we Googled that exact phrase and found a package that does it, called `spOccupancy`. Let's install it!
+
+```{r eval=FALSE}
+
+  install.packages('spOccupancy')
+
+```
+
+## Using Packages
+
+Packages are sets of functions and data objects, that's it. That said, you can run into issues with them. Most of the time, the issues stem from **dependencies**, which are other packages on which the package you are using relies.
+
+For example, most spatial packages (I suspect our occupancy package is one of these) depend on an underlying package such as `rgdal` or `rgeos` to work. The programmers use functions from these packages when they write their own packages. 
+
+## How do I actually access my package?
+
+Any time you download a package that is not included in the base R installation, you have to tell R to activate it. This is done with the `library()` function, like so:
+```{r}
+
+  library(spOccupancy)
+
+```
+
+Notice that I did not have to give R a character string. Packages *are* objects, so R recognizes their names. Now, if I need a function from that package, all I have to do is type it's name to use it.
+
+
+## Issues with Dependencies
+
+When a programmer uses a package's function in their code, they *assume* it behaves a particular way. If the maintainer of the dependency changes the way that function works, it will break the function that depends on it. Because of this, you need to pay attention to what version of the dependency your desired package requires. 
+
+A common problem with tough errors in a new package is that the version of a dependency on your machine is older than what the package needs. You can check this in the package's documentation on CRAN. This will be a deep dive, but that is what you do when it's a new package, especially with big packages.
+
+## Namespace Conflicts
+
+Another, less common issue with packages is a namespace conflict. The namespace of a package is an internal index within R that R uses to see what's in the package. 
+
+Some packages use the same name for wildly different functions. Other times, the evolution of a package leads to successive packages with the same name for similar functions, that work much differently under the hood. If they don't specify what to do with namespace conflicts in the package, you will run into trouble.
+
+## Dealing with Namespace COnflicts
+
+Two of the biggest offenders in our field are the `raster` and `terra` packages, both written to work with raster data sets in R by the same guy.
+
+In order to make the transition between packages easier, he used the same names for a lot of the same functions in the newer `terra` package as the older `raster`. He did not, however, specify how to deal with namespace conflicts.
+
+So what do you do?
+
+## Dealing with Namespace COnflicts
+
+The best way to address/prevent these problems is to be specific about the package you intend to pull the function from. If we install and load both the `raster` and `terra` packages, we can see an example:
+
+```{r eval=FALSE}
+
+  install.packages(c('raster','terra'))
+
+  library(raster); library(terra)
+
+  ?raster::crop
+  
+  ?terra::crop
+
+```
+
+The double-colon operator (`::`) is used to make the package choice explicit. This will guarantee no namespace issues. It is the opposite of lazy programming, but it is technically best practice to do all the time. Nobody does.
+
+# Five Steps to Debugging
+
+## The Scenario
+
+Let's say we work for a car manufacturer and we need to be able to predict a vehicle's fuel economy from a set of design characteristics. We fit a linear model using the `mtcars` data set and now are trying to predict a new car's fuel economy.
+
+```{r}
+
+  mod.cars <- lm(formula = mpg~disp, 
+                 data = mtcars)
+  # The function is read
+  # "mpg is a function of disp"
+
+  # This breaks!
+  # predict(mod.cars, newdata = c(520))
+
+  
+```
+
+## Step 0: Check for Typos
+
+Before launching into a serious debugging session, check you code for typos. Make sure you have commas where they belong. Make sure all brackets and parentheses are matched correctly (e.g., `(` has one of these where it should be `)`). Check capitalization (this one pisses me off often).
+
+Most errors are typos and syntax. Comb for these first.
+
+## Step 1: Consult the Help Page
+
+Your first step when a function breaks is to look at the help page for that function. In particular, pay attention to the arguments the error talks about (if it gives one) and compare that to the arguments on the help page:
+
+```{r eval=FALSE}
+
+  ?predict.lm
+
+```
+
+One of the potential problems you will find is when you need to check the help page of a **generic method**, like `predict()`. There are specific predict methods for all kinds of obects. R just picks the right one for the object class you feed it. When you look for the help page, you need to know what object class you're looking for. Ours is `"lm"`.
+
+## Step 2: Look Inside the Function
+
+The argument that gave the error does not appear to be in the `predict()` function. But, it could be in one of it's dependencies. Look under the hood with the `View()` function to see if there is a `data` argument fed somewhere inside:
+```{r eval=FALSE}
+
+  View(predict.lm)
+
+```
+
+Using the find tool, we can't find an example of just "data", or anything else obvious. So now we proceed to step 3.
+
+## Step 3: Consult the Interwebs
+
+Now it's time for Google. If the error message is sufficiently specific, copy and paste it into Google and see what you find. Some issues are common, some are not, but at a grad student level, I almost guarantee you someone else has had the same issue.
+
+StackOverflow, StackExchange, even Reddit, and especially YouTube are full of knowledgeable people that tackle these problems. It may take some digging, but 9 times out of 10 (at least) you'll find what you need.
+
+So what do you do now? Proceed to step 4...
+
+## Step 4: Consult Someone Who Knows More Than You.
+
+There's no replacement for experience, especially in programming. Debugging is an art and it requires exposure to many frustrating problems to become proficient at it. Often, your problem is obvious, just not to you. More experienced, or just less tired, programmers can often spot problems quickly.
+
+DO NOT PROCEED STRAIGHT TO STEP 4. Invest in your abilities and respect others' time and go through all 3 prior steps before going to step 4.
+
+## Step 4 In action
+Experienced programmers would spot the object type issue:
+```{r eval=FALSE}
+
+  # No worky
+  predict(mod.cars, newdata = c(520))
+
+  # Worky
+  predict(mod.cars, newdata = data.frame(disp = 520))
+
+```
+
+But what if that didn't work???
+
+## Step 5: Go Home
+
+This is not a joke. Taking a break, stepping back, and approaching the problem with fresh eyes, a fresh brain, and a fresh fuse will generally make things simpler. If Step 4 is not an option, Step 5 often solves the problem.
+
+You could make the case that Step 5 should come before Step 4, but I don't think so. Step 4 often results in a really quick resolution (problems are usually small), so it's worth it to try before stepping away. Just recognize when you are spent, and how long you can afford to step away when weighing that decision.
+
+## Preventing Problems
+
+One of the keys to debugging is preventing it (or at least difficulties with it) in the first place. You do this by writing pretty code. Consider two examples:
+
+```{r}
+
+  # Single Line 
+  plot(data.frame(x = c(1,2,3),y = c(3,4,5)))
+
+  # Pretty  
+  plot(                       # Initialize plot
+    data.frame(x = c(1,2,3),  # Set x coords
+               y = c(3,4,5)   # Set y coords
+      )
+    )
+
+```
+
+## Pretty Coding Principles
+
+- Don't type on the left margin, indent 1 tab.
+- Separate arguments of a function on new lines, or at least align them nicely on a line
+- Indent everything within a function when on new lines (this is huge)
+- Back out when done with said function
+- Comment what each block does thoroughly!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

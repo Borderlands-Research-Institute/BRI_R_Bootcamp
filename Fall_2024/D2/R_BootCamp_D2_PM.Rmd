@@ -1,0 +1,532 @@
+---
+title: "R Graphics"
+author: "Justin French"
+date: "`r Sys.Date()`"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Is Amazing at Everything, but Especially Graphics
+
+One of the early things that R was recognized for was it's ability to provide users total control over graphics. However, the dirty secret was that base R graphics are tough to learn how to control.
+
+It took a while, but the Legendary Hadley Wickham changed this with the `ggplot2` package. This gave a more user friendly means of achieving nice graphics with less headache. Remember that "less" is still a relative term.
+
+For all of our examples, we will plot a linear regression using `mtcars` data. We'll use fuel efficiency as a function of vehicle weight, since it was the most supported model earlier today:
+```{r}
+
+  mod.wt <- lm(mpg~wt, data = mtcars)
+
+```
+
+## Base R Graphics
+This example shows some of the basic arguments to get you off the ground with a simple graph.
+```{r eval=FALSE}
+
+  plot(x = mtcars$wt,  # Specify X coords
+       y = mtcars$mpg, # Specify y coords
+       main = 'Fuel Efficiency by Weight',
+       xlab = 'Weight (Tons)',
+       ylab = 'Miles per Gallon',
+       col = 'blue',   # Specify dot color
+       pch = 18)       # Specify dot char.
+
+```
+
+## Base R Graphics
+This example shows some of the basic arguments to get you off the ground with a simple graph.
+```{r echo=FALSE}
+
+  plot(x = mtcars$wt,  # Specify X coords
+       y = mtcars$mpg, # Specify y coords
+       main = 'Fuel Efficiency by Weight',
+       xlab = 'Weight (Tons)',
+       ylab = 'Miles per Gallon',
+       col = 'blue',   # Specify dot color
+       pch = 18)       # Specify dot char.
+
+```
+
+## Add a Trend Line
+
+Once the `plot()` function has run, the graphic environment is still open until you run a non-graphics function. That means we can use the `abline()` function to add the trend line from a fitted model:
+```{r eval=FALSE}
+
+  plot(x = mtcars$wt,  # Specify X coords
+       y = mtcars$mpg, # Specify y coords
+       main = 'Fuel Efficiency by Weight',
+       xlab = 'Weight (Tons)',
+       ylab = 'Miles per Gallon',
+       col = 'blue',   # Specify dot color
+       pch = 18)       # Specify dot char.
+  abline(mod.wt)       # Add the trend line
+
+```
+
+## Add a Trend Line
+
+Once the `plot()` function has run, the graphic environment is still open until you run a non-graphics function. That means we can use the `abline()` function to add the trend line from a fitted model:
+```{r echo=FALSE}
+
+  plot(x = mtcars$wt,  # Specify X coords
+       y = mtcars$mpg, # Specify y coords
+       main = 'Fuel Efficiency by Weight',
+       xlab = 'Weight (Tons)',
+       ylab = 'Miles per Gallon',
+       col = 'blue',   # Specify dot color
+       pch = 18)       # Specify dot char.
+  abline(mod.wt)       # Add the trend line
+
+```
+
+## Add a CI of the Line
+We have to use the `predict()` function to get the CI of the regression line. This also gives us the regression line in the first place, so we won't use the `abline()` function to do it.
+```{r eval=FALSE}
+
+  CI <- predict(object = mod.wt,
+                newdata = data.frame(
+                  wt = seq(1, 6, by = 0.1)),
+                interval = 'confidence')
+
+   plot(x = mtcars$wt,  # Specify X coords
+       y = mtcars$mpg, # Specify y coords
+       main = 'Fuel Efficiency by Weight',
+       xlab = 'Weight (Tons)',
+       ylab = 'Miles per Gallon',
+       col = 'blue',   # Specify dot color
+       pch = 18)       # Specify dot char.
+   lines(x = seq(1, 6, by = 0.1),  # Give x coords of line
+         y = CI[,1])               # Give y coords of line
+   lines(x = seq(1, 6, by = 0.1),  # Give x coords of lower
+         y = CI[,2],               # Gixe y coords of lower
+         lty = 3)                  # Set line type (lty)
+   lines(x = seq(1, 6, by = 0.1),  # Give x coords of upper
+         y = CI[,3],               # Give y coords of upper
+         lty = 3)                  # Set line type again
+
+```
+
+## Add a CI of the Line
+We have to use the `predict()` function to get the CI of the regression line. This also gives us the regression line in the first place, so we won't use the `abline()` function to do it.
+```{r echo=FALSE}
+
+  CI <- predict(object = mod.wt,
+                newdata = data.frame(
+                  wt = seq(1, 6, by = 0.1)),
+                interval = 'confidence')
+
+   plot(x = mtcars$wt,  # Specify X coords
+       y = mtcars$mpg, # Specify y coords
+       main = 'Fuel Efficiency by Weight',
+       xlab = 'Weight (Tons)',
+       ylab = 'Miles per Gallon',
+       col = 'blue',   # Specify dot color
+       pch = 18)       # Specify dot char.
+   lines(x = seq(1, 6, by = 0.1),  # Give x coords of line
+         y = CI[,1])               # Give y coords of line
+   lines(x = seq(1, 6, by = 0.1),  # Give x coords of lower
+         y = CI[,2],               # Gixe y coords of lower
+         lty = 3)                  # Set line type (lty)
+   lines(x = seq(1, 6, by = 0.1),  # Give x coords of upper
+         y = CI[,3],               # Give y coords of upper
+         lty = 3)                  # Set line type again
+
+```
+
+## A Couple of Handy Things
+
+```{r eval=FALSE}
+
+  CI <- predict(object = mod.wt,
+                newdata = data.frame(
+                  wt = seq(1, 6, by = 0.1)),
+                interval = 'confidence')
+
+   plot(x = mtcars$wt,  # Specify X coords
+       y = mtcars$mpg, # Specify y coords
+       main = 'Fuel Efficiency by Weight',
+       xlab = 'Weight (Tons)',
+       ylab = 'Miles per Gallon',
+       col = 'blue',   # Specify dot color
+       pch = 18)       # Specify dot char.
+   lines(x = seq(1, 6, by = 0.1),  # Give x coords of line
+         y = CI[,1])               # Give y coords of line
+   lines(x = seq(1, 6, by = 0.1),  # Give x coords of lower
+         y = CI[,2],               # Gixe y coords of lower
+         lty = 3)                  # Set line type (lty)
+   lines(x = seq(1, 6, by = 0.1),  # Give x coords of upper
+         y = CI[,3],               # Give y coords of upper
+         lty = 3)                  # Set line type again
+   abline(v = mean(mtcars$wt),     # Set vertical line at
+          lty = 2)                 # mean of x
+   abline(h = mean(mtcars$mpg),    # Set horizontal line
+          lty = 2)                 # at mean of y  
+   
+```
+
+
+## A Couple of Handy Things
+
+```{r echo=FALSE}
+
+  CI <- predict(object = mod.wt,
+                newdata = data.frame(
+                  wt = seq(1, 6, by = 0.1)),
+                interval = 'confidence')
+
+   plot(x = mtcars$wt,  # Specify X coords
+       y = mtcars$mpg, # Specify y coords
+       main = 'Fuel Efficiency by Weight',
+       xlab = 'Weight (Tons)',
+       ylab = 'Miles per Gallon',
+       col = 'blue',   # Specify dot color
+       pch = 18)       # Specify dot char.
+   lines(x = seq(1, 6, by = 0.1),  # Give x coords of line
+         y = CI[,1])               # Give y coords of line
+   lines(x = seq(1, 6, by = 0.1),  # Give x coords of lower
+         y = CI[,2],               # Gixe y coords of lower
+         lty = 3)                  # Set line type (lty)
+   lines(x = seq(1, 6, by = 0.1),  # Give x coords of upper
+         y = CI[,3],               # Give y coords of upper
+         lty = 3)                  # Set line type again
+   abline(v = mean(mtcars$wt),     # Set vertical line at
+          lty = 2)                 # mean of x
+   abline(h = mean(mtcars$mpg),    # Set horizontal line
+          lty = 2)                 # at mean of y  
+   
+```
+
+## Another Handy Thing
+
+To plot a line, we need to change the `type` argument in the `plot()` function. Here's a simpler example with a new data frame:
+```{r eval=FALSE}
+
+  dat.plot <- 
+    data.frame(x = 1:10,
+               y = 3 + 2.1 * c(1:10) + 
+                 rnorm(10, sd = 4))
+
+  plot(dat.plot$x, dat.plot$y, 
+       type = 'l') # Connect dots with lines
+
+```
+
+## Another Handy Thing
+
+To plot a line, we need to change the `type` argument in the `plot()` function. Here's a simpler example with a new data frame:
+```{r echo=FALSE}
+
+  dat.plot <- 
+    data.frame(x = 1:10,
+               y = 3 + 2.1 * c(1:10) + 
+                 rnorm(10, sd = 4))
+
+  plot(dat.plot$x, dat.plot$y, 
+       type = 'l') # Connect dots with lines
+
+```
+
+# Grammar of Graphics
+
+The way forward...
+
+## Introducing `ggplot2`
+
+Hokay, so. In the mid 2000's, people got tired of some of the the more frustrating things we just got done dealing with. To address these issues and make prettier plots more rapidly accessible, the R Gods gave us the package `ggplot2`.
+
+There was a `ggplot` but it kinda floundered and is only available from legacy code on CRAN.
+
+```{r eval=FALSE}
+
+  install.packages('ggplot2')
+
+```
+
+## The Same thing in GG
+```{r echo=FALSE, warning=FALSE}
+  
+  library(ggplot2)
+
+```
+
+Let's make the same plot for our regression, just in the new syntax!
+
+```{r}
+
+  myPlot <- 
+    ggplot(data = mtcars) +
+      geom_point(aes(x = wt,
+                     y = mpg),
+                 color = 'blue') +
+      xlab('Vehicle Weight (Tons)') +
+      ylab('Miles per Gallon') +
+        ggtitle('Fuel Economy by Vehicle Weight')
+
+```
+
+
+## The Same thing in GG
+
+```{r echo=FALSE}
+  
+  myPlot
+
+```
+
+## Add Trend Line in GG
+
+```{r message=FALSE}
+
+  myPlot <- 
+    myPlot +
+      geom_smooth(method = 'lm', # State we want linear reg.
+                  aes(x = wt,    # Give x variable
+                      y = mpg),  # Give y variable
+                  color = 'gray25', # Set line color
+                  linewidth = 0.8,  # Set line size
+                  linetype = 'dashed') # Set line type
+
+```
+
+The line type can be specified with a string, or with the numbers 1 through 6.
+
+## Add Trend Line in GG
+
+```{r echo=FALSE, message=FALSE}
+
+  myPlot
+
+```
+
+## Add the Vert. and Horiz. Lines
+
+```{r echo=FALSE}
+  # We won't commit this, it's just to
+  # demonstrate
+  myPlot +
+    geom_vline(
+      aes(xintercept = mean(mtcars$wt)),
+      linetype = 4) +
+    geom_hline(
+      aes(yintercept = mean(mtcars$mpg)),
+      linetype = 4)
+
+```
+
+## Themes in `ggplot2'
+
+```{r fig.width=4, fig.height=3, fig.align='center', message=FALSE}
+  # Can use some presets
+  myPlot +
+    theme_minimal()
+
+```
+
+
+## Modifying with `theme()`
+
+The `theme()` argument is your gateway to total control of what a `ggplot` looks like. You can get really deep, really quickly. The example below shows how to modify the background area, but that's not all you can change. Feel free to play around with any and all options to make your own theme.
+
+```{r }
+
+  myUglyPlot <-
+    myPlot +
+      theme(panel.background = 
+              element_rect(fill = 'ivory'),
+            panel.grid.major =   
+              element_line(color = 'cornflowerblue',
+                           linetype = 2),
+            panel.grid.minor = 
+              element_line(color = 'lawngreen',
+                           linetype = 5)
+            )
+
+```
+
+## `ggplot` Throws Up
+
+```{r echo=FALSE, message=FALSE}
+
+  myUglyPlot
+
+```
+
+## Colorblind-Friendly Pallates
+
+There is a package called `viridis` that opens up a suite of colorblind-friendly color ramps for use in `ggplot` environments. We will use it extensively when we make maps of surfaces. 
+
+```{r eval=FALSE}
+
+  install.packages('viridis')
+
+```
+
+# Panel Graphics
+
+## Panels in Base R
+
+Making panel graphics in Base R requires reseting graphics parameters at the system level in R. This can be a pain if you forget to reset them when you are done. 
+
+This is done using the `par()` function to manipulate the system graphics parameters. Specifically, you need to set the `mfrow` argument, which wants a vector of the row and column numbers of your graphics panel. Here are a couple of examples of how to do this properly:
+
+## Two-panel Graph of Model Diagnostics
+
+```{r eval=FALSE}
+
+  par(mfrow=c(1,2)) # One row, two columns
+    plot(mod.wt, which = 2)
+    plot(mod.wt, which = 4)
+  par(mfrow=c(1,1)) # Set back to 1,1
+
+```
+
+## Two-panel Graph of Model Diagnostics
+
+```{r echo=FALSE}
+
+  par(mfrow=c(1,2)) # One row, two columns
+    plot(mod.wt, which = 2)
+    plot(mod.wt, which = 4)
+  par(mfrow=c(1,1)) # Set back to 1,1
+
+```
+
+## Four-Panel with Histograms of Variables
+
+```{r eval=FALSE}
+
+  par(mfrow=c(2,2)) # One row, two columns
+    hist(mtcars$mpg)    # The hist() function 
+    hist(mtcars$disp)   # makes histograms
+    hist(mtcars$hp)     # All other graphics args
+    hist(mtcars$qsec)   # transfer (titles etc.)
+  par(mfrow=c(1,1)) # Set back to 1,1
+
+```
+
+## Four-Panel with Histograms of Variables
+
+```{r echo=FALSE}
+
+  par(mfrow=c(2,2)) # One row, two columns
+    hist(mtcars$mpg)    # The hist() function 
+    hist(mtcars$disp)   # makes histograms
+    hist(mtcars$hp)     # All other graphics args
+    hist(mtcars$qsec)   # transfer (titles etc.)
+  par(mfrow=c(1,1)) # Set back to 1,1
+
+```
+
+## Panel Graphs with GG
+
+The tidyverse (of which `ggplot2` is a member) makes things a lot nicer. For panel graphs we also need the `gridExtra` package, which we will download here:
+
+```{r eval=FALSE}
+
+  install.packages("gridExtra")
+
+```
+
+## A Two-Panel With GG
+
+```{r message=FALSE, fig.align='center', fig.width=7, fig.height=3}
+
+  library(gridExtra)
+
+  grid.arrange(myPlot, myUglyPlot,
+               ncol = 2)
+
+```
+
+# Saving Images Programatically
+
+## Base R Graphic
+
+```{r}
+
+  png('baseR.png', width = 3000, height = 2000,
+      res = 300)
+    hist(mtcars$disp, main = 'Some Histogram')
+  dev.off()
+
+```
+
+## Export with GG
+
+```{r}
+
+  png('ggplot.png', width = 3000, height = 2000,
+      res = 300)
+    myPlot
+  dev.off()
+
+```
+
+# Cool stuff!!!
+
+## 3D Graphics with `plotly`
+
+The `plotly` package is an interface that uses web languages to make interactive 2- and 3-D graphics that can be incorporated into slideshows. It is a little tricky sometimes, but has really good web support.
+
+```{r eval=FALSE}
+
+  install.packages("plotly")
+
+```
+
+## 3D Scatterplot
+
+```{r warning=FALSE, echo=FALSE, message=FALSE, results='hide'}
+
+  library(plotly)
+  
+```
+
+```{r echo=FALSE, message=FALSE, fig.align='right', fig.width=6, fig.height=5}
+
+
+  myPlot <- 
+    plot_ly(
+      data = mtcars,
+      x = mtcars$disp,
+      y = mtcars$mpg,
+      z = mtcars$hp,
+      text = rownames(mtcars),
+              hoverinfo = 'text',
+              color = as.factor(mtcars$cyl), 
+              size = I(75))
+
+  myPlot <- layout(myPlot, 
+                   title = 'Cars, cars, cars...',
+                   scene = list(xaxis = list(title = 'Displacement'),
+                                yaxis = list(title = 'Miles per Gallon'),
+                                zaxis = list(title = 'Horse Power')
+                                )
+                   )
+  
+  myPlot
+
+```
+
+## Plotly Resources
+
+https://plotly.com/r/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
