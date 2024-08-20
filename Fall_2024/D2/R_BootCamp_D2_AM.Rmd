@@ -31,8 +31,9 @@ The proper sequence of ideas to tackle this is to begin with **sequential operat
 **Looping** is the act of moving sequentially through a set of values of a a variable and repeatedly executing the same code with updated values of the variable. At least, that's what `for` loops do. It is an example of an **iterator** (an operation that repeats things), but it only considers the sequence of values you feed it. Other iterators consider different things. The basic syntax of an R `for` loop looks like this:
 ```{r}
 
-  for(i in vec){ 
+ for(i in vec){ 
     cat(i * 2, ' ')
+    # cat(i * 3, ' ')
   }
 
 ```
@@ -44,12 +45,27 @@ When you want to store succesive outputs of a loop in a single object you need t
   # Make an empty vector
   vec2 <- c()
 
+  # make example data frame
+ df <- data.frame('a' = 1:5,
+                  'b' = 6:10)
+
+ for (i in 1:nrow(df)) {
+   
+   df$c[i] <- df$a[i] + df$b[i]
+ }
+ 
+
   # Fill empty vector with values
   for(i in vec){ 
-    vec2 <- c(vec2, i * 2)
+    # vec2 <- c(vec2, i * 2)
+    # or
+    vec2[i] <- i * 2
   }
 
 ```
+
+If the vector you are feeding the loop to iterate over are numbers that start at 1 and increase, you can use the vector its self as an index when storing outputs in the accumulator. An example of this would be 1:nrow(data.frame) where you wanted to do something specific to each row od a data frame, or 1:ncol(data.frame) to do something to every column. 
+
 
 Another important concept with loops is **nesting**, or putting one iterator inside another. The most common is a nested `for` loop. These are handy when you have to work across higher dimensional objects. For example, if we loop across a matrix we need to iterate over columns and then rows, or vice versa:
 ```{r}
@@ -60,9 +76,11 @@ Another important concept with loops is **nesting**, or putting one iterator ins
                 data = c(0:24))
 
   for(i in 1:nrow(mat)){
+    
     for(j in 1:ncol(mat)){
       mat[i,j] <- mat[i,j]/5
     }
+    
   }
 
   mat
@@ -71,7 +89,7 @@ Another important concept with loops is **nesting**, or putting one iterator ins
 
 In the case above, the inner loop runs for every value within a single run of the outer loop. This has the effect of making loop start on a row, do all the columns, then move to the next row, and then run through all the columns again, and so on.
 
-We incorporated an  example of **soft coding** when we specified the vectors that each loop ran over. This is when you make a function learn some of the necessary values for it to run from the object you run it on. The `nrow()` and `ncol()` functions learn the dimensions of the matrix without you having to manually specify them.
+We incorporated an example of **soft coding** when we specified the vectors that each loop ran over. This is when you make a function learn some of the necessary values for it to run from the object you run it on. The `nrow()` and `ncol()` functions learn the dimensions of the matrix without you having to manually specify them.
 
 ## While loops
 
@@ -190,7 +208,28 @@ All a function is is a block of code that take a certain input, does a certain t
     return(internalThing == arg2)
   }
 
+  # lets use our new function!
+
+ # is 5 greater than 9? Lets see!
+    myFunction(arg1 = 5)
+    
+ # is 5 less than 9?
+    myFunction(arg1 = 5, arg2 = TRUE)
+    
+    
+  # lets make a super simple function
+    
+  add <- function(a,b){
+    
+    output <- a + b
+    
+    return(output)
+    
+  }
   
+  # lets use our simple function
+  
+  add(a = 1, b = 2)
 
 ```
 
@@ -223,7 +262,7 @@ This is a lot of extra code to do what we accomplished with one line earlier. Ho
                         length(x$coefficients)-1
                       })
       
-      modAIC <-sapply(modList, AIC) 
+      modAIC <- sapply(modList, AIC) 
       
       modR2 <- sapply(modList,
                       function(x){
@@ -236,6 +275,8 @@ This is a lot of extra code to do what we accomplished with one line earlier. Ho
                         R2 = modR2
                         )
       
+      res <- res[order(res$AIC),]
+      
       rownames(res) <- 1:nrow(res) # Set the rownames attribute
       
       return(res)            # Return the output
@@ -246,6 +287,97 @@ This is a lot of extra code to do what we accomplished with one line earlier. Ho
 ```
 
 
+Try it yourself!
+
+Make a function that takes a vector of values (1:10) as an input, multiplies each value by the next value in the vector, and then returns the sum of the resulting values. 
+
+
+```{r}
+
+
+  # create vector
+vec <- 1:10
+
+
+# start the function
+example <- 
+  function(var){ # declare variable names
+  
+  vals <- c()    # create empty vector to fill in the for loop
+for(i in var) {  # start the for loop
+
+  vals[i] <- var[i] * var[i+1] # multiply each number by the next number in line and save to the                                 #empty vector
+    
+}
+
+return(sum(vals, na.rm = T)) # return the sum of vals while removing the NA
+  
+}
+
+  # use the function
+example(vec)
+
+
+
+
+
+
+
+
+
+
+
+vec <- c(1:10)
+
+myfunction <- function(vec){
+  
+  vals <- c()
+  
+  for (i in 1:length(vec)) {
+      vals[i] <- vec[i] * vec[i+1]
+  }
+  
+  return(sum(vals, na.rm = T))
+  
+}
+
+myfunction(vec)
+
+
+```
+```{r}
+
+  # install package from GitHub
+  if(!require(devtools)) {install.packages("devtools")}
+  devtools::install_github("brooke-watson/BRRR")
+  
+  # gives list of sounds by artist
+  BRRR::skrrrahh_list()
+  
+  # gives us a specific sound based on the number
+  BRRR::skrrrahh(43)
+  
+  # for loop to repeat sound 43 (snoop) 5 times with a 3-second delay  
+  for(i in 1:5){
+    BRRR::skrrrahh(43)
+    Sys.sleep(3)
+  }
+  
+  # for loop to run through sounds 1:5 with a 1-second delay
+  for(i in 1:5){
+    BRRR::skrrrahh(i)
+    Sys.sleep(1)
+  }
+  
+  # for loop to run through sounds 1:52 with a 1-second delay
+  for(i in 1:52){
+    BRRR::skrrrahh(i)
+    Sys.sleep(1)
+  }
+  
+
+
+```
 
 
 
