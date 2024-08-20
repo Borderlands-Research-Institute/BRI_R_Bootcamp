@@ -97,12 +97,6 @@ So, lets break down whats happening in the fluidPage() function. There are many 
 If we run this 
 
 
-two other functions within it,  and mainPanel(). These are breaking the page into 2 separate parts, the sidebar (left side), and the main page (right side). Within sidebarLayout(), we have sidebarPanel(), and within that we have sliderInput(). To be honest, I'm not sure why they felt 
-
-
-
-
-
 
 
 
