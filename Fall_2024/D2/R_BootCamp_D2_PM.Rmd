@@ -109,64 +109,6 @@ We have to use the `predict()` function to get the CI of the regression line. Th
 
 ```
 
-## Add a CI of the Line
-We have to use the `predict()` function to get the CI of the regression line. This also gives us the regression line in the first place, so we won't use the `abline()` function to do it.
-```{r echo=FALSE}
-
-  CI <- predict(object = mod.wt,
-                newdata = data.frame(
-                  wt = seq(1, 6, by = 0.1)),
-                interval = 'confidence')
-
-   plot(x = mtcars$wt,  # Specify X coords
-       y = mtcars$mpg, # Specify y coords
-       main = 'Fuel Efficiency by Weight',
-       xlab = 'Weight (Tons)',
-       ylab = 'Miles per Gallon',
-       col = 'blue',   # Specify dot color
-       pch = 18)       # Specify dot char.
-   lines(x = seq(1, 6, by = 0.1),  # Give x coords of line
-         y = CI[,1])               # Give y coords of line
-   lines(x = seq(1, 6, by = 0.1),  # Give x coords of lower
-         y = CI[,2],               # Gixe y coords of lower
-         lty = 3)                  # Set line type (lty)
-   lines(x = seq(1, 6, by = 0.1),  # Give x coords of upper
-         y = CI[,3],               # Give y coords of upper
-         lty = 3)                  # Set line type again
-
-```
-
-## A Couple of Handy Things
-
-```{r eval=FALSE}
-
-  CI <- predict(object = mod.wt,
-                newdata = data.frame(
-                  wt = seq(1, 6, by = 0.1)),
-                interval = 'confidence')
-
-   plot(x = mtcars$wt,  # Specify X coords
-       y = mtcars$mpg, # Specify y coords
-       main = 'Fuel Efficiency by Weight',
-       xlab = 'Weight (Tons)',
-       ylab = 'Miles per Gallon',
-       col = 'blue',   # Specify dot color
-       pch = 18)       # Specify dot char.
-   lines(x = seq(1, 6, by = 0.1),  # Give x coords of line
-         y = CI[,1])               # Give y coords of line
-   lines(x = seq(1, 6, by = 0.1),  # Give x coords of lower
-         y = CI[,2],               # Gixe y coords of lower
-         lty = 3)                  # Set line type (lty)
-   lines(x = seq(1, 6, by = 0.1),  # Give x coords of upper
-         y = CI[,3],               # Give y coords of upper
-         lty = 3)                  # Set line type again
-   abline(v = mean(mtcars$wt),     # Set vertical line at
-          lty = 2)                 # mean of x
-   abline(h = mean(mtcars$mpg),    # Set horizontal line
-          lty = 2)                 # at mean of y  
-   
-```
-
 
 ## A Couple of Handy Things
 
@@ -209,10 +151,33 @@ To plot a line, we need to change the `type` argument in the `plot()` function. 
                y = 3 + 2.1 * c(1:10) + 
                  rnorm(10, sd = 4))
 
+  plot(x = dat.plot$x,
+       y = dat.plot$y,
+       type = 'l',
+       main = 'Our beautiful line graph',
+       xlab = 'X lab',
+       ylab = 'Y lab',
+       col = 'blue',
+       lwd = 5)
+
   plot(dat.plot$x, dat.plot$y, 
        type = 'l') # Connect dots with lines
 
 ```
+
+Another common base graphics function is a histogram
+
+```{r}
+
+hist(dat.plot$y,
+     main = 'Main title',
+     xlab = 'X lab',
+     ylab = 'Y labs',
+     breaks = 10)
+
+
+```
+
 
 ## Another Handy Thing
 
@@ -256,14 +221,16 @@ Let's make the same plot for our regression, just in the new syntax!
 
 ```{r}
 
-  myPlot <- 
+  myPlot <-
     ggplot(data = mtcars) +
       geom_point(aes(x = wt,
-                     y = mpg),
-                 color = 'blue') +
+                     y = mpg,
+                     color = as.factor(cyl))) +
       xlab('Vehicle Weight (Tons)') +
       ylab('Miles per Gallon') +
         ggtitle('Fuel Economy by Vehicle Weight')
+
+myPlot
 
 ```
 
@@ -374,35 +341,11 @@ This is done using the `par()` function to manipulate the system graphics parame
 
 ## Two-panel Graph of Model Diagnostics
 
-```{r eval=FALSE}
-
-  par(mfrow=c(1,2)) # One row, two columns
-    plot(mod.wt, which = 2)
-    plot(mod.wt, which = 4)
-  par(mfrow=c(1,1)) # Set back to 1,1
-
-```
-
-## Two-panel Graph of Model Diagnostics
-
 ```{r echo=FALSE}
 
   par(mfrow=c(1,2)) # One row, two columns
     plot(mod.wt, which = 2)
     plot(mod.wt, which = 4)
-  par(mfrow=c(1,1)) # Set back to 1,1
-
-```
-
-## Four-Panel with Histograms of Variables
-
-```{r eval=FALSE}
-
-  par(mfrow=c(2,2)) # One row, two columns
-    hist(mtcars$mpg)    # The hist() function 
-    hist(mtcars$disp)   # makes histograms
-    hist(mtcars$hp)     # All other graphics args
-    hist(mtcars$qsec)   # transfer (titles etc.)
   par(mfrow=c(1,1)) # Set back to 1,1
 
 ```
@@ -436,7 +379,7 @@ The tidyverse (of which `ggplot2` is a member) makes things a lot nicer. For pan
 
   library(gridExtra)
 
-  grid.arrange(myPlot, myUglyPlot,
+ grid.arrange(myPlot, myUglyPlot,
                ncol = 2)
 
 ```
@@ -446,7 +389,7 @@ The tidyverse (of which `ggplot2` is a member) makes things a lot nicer. For pan
 ## Base R Graphic
 
 ```{r}
-
+# paste0(choose.dir(),'myfile.png')
   png('baseR.png', width = 3000, height = 2000,
       res = 300)
     hist(mtcars$disp, main = 'Some Histogram')
@@ -511,11 +454,81 @@ The `plotly` package is an interface that uses web languages to make interactive
 
 ```
 
-## Plotly Resources
+
+Try it yourself!
+
+Make a graph. In this graph, make the x axis age and the y axis height. Make the points red starts, give it a funny title, and assign it to an object named 'graph'.
+
+```{r}
+
+data <- data.frame('id' = 1:10,
+                   'height' = runif(10,4,7.5),
+                   'age' = runif(10,10,100),
+                   'weight' = runif(10,50,180))
+
+
+graph <-
+  ggplot(data = data) +
+  geom_point(aes(x = age,
+                 y = height),
+             color = 'red',
+             shape = 8) +
+   ggtitle('My funny title') +
+  theme_light()
+  
+  
+
+
+
+```
+
+
+Pratice with 3D plot
+
+Make a 3D plotly plot that has height on the x axis, age on the y axis, and weight on the z axis. Give it the proper axis titles, and a really long main title. Make the colors of the points based of the id column. 
+
+Go!!!
+
+
+
+
+```{r}
+
+plot <- plot_ly(
+  data = data,
+  x = data$height,
+  y = data$age,
+  z = data$weight,
+  color = data$id
+)
+
+
+layout(plot,
+       title = 'Something super super super super super super long. AGEHEIGHTWEIGHT!!!!!',
+                   scene = list(xaxis = list(title = 'Height'),
+                                yaxis = list(title = 'Age'),
+                                zaxis = list(title = 'Weight')
+                                )
+                   )
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+## Plotly/plotting Resources
 
 https://plotly.com/r/
 
-
+https://r-graph-gallery.com/
 
 
 
