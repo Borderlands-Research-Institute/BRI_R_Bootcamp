@@ -1,0 +1,79 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{geometry}[margin = 1in]
+\usepackage{graphicx}
+\usepackage{natbib}
+ \setcitestyle{citesep={,},aysep={}}
+  \bibliographystyle{jwm}
+
+\title{R Bootcamp Fall 2024 LaTeX Example}
+\author{Me \and some other dude}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Abstract}
+This document is an example. This will turn this script into a one-stop-shop for managing and cleaning data, analyzing those data, generating graphics, and incorporating them into a publication-grade paper.
+
+\noindent Everything else can be inferred from what you see in this script\footnote{We'll point it out with comments along the way.}. However, a final thing to note is any time you make a special environment with a \texttt{\textbackslash begin{}} command, you must close it properly with an \texttt{\textbackslash end{}} command.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\textwidth]{figure/meme.jpeg}
+    \caption{we love a good meme}
+    \label{fig:meme}
+\end{figure}
+
+Here is my reference for this cool meme (Figure \ref{fig:meme})
+
+
+example math mode: 
+The equation of a line in slope-intercept form is $y=mx+b$.
+
+
+MacArther-Levins Niche Overlap is as follows:
+
+\begin{equation}
+  \label{eqn:1}
+  M_{mf} = \frac{\sum_{i}^{n} p_{im} p_{if}}{\sum p^2_{im}}
+\end{equation}
+
+\noindent Everything else...
+
+\newpage
+\section*{Introduction}
+
+\section*{Methods}
+
+<<exampleChunk, results='hide', echo=FALSE>>=
+
+  a <- 2:30
+  
+  sum <- summary(a)
+
+
+@
+
+Items from a code chunk are saved and can be expressed in text using the command \texttt{\textbackslash{}Sexpr\{\}} like so - Results: \Sexpr{sum}.
+
+% The summary from sum is \Sexpr{sum}.
+
+
+\section*{Results}
+
+Some dude name Smith said that Bighorn are dumb \citep{smithEtAl02}.
+
+\section*{Discussion}
+
+\section*{Acknowledgements}
+
+
+\newpage
+\bibliography{exampleBib}
+
+
+\end{document}
+ 

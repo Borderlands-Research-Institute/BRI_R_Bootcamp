@@ -1,0 +1,13 @@
+\begin{thebibliography}{1}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{{\tt #1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+
+\bibitem[{Smith et~al.(2002)Smith, Doe, and Public}]{smithEtAl02}
+Smith, A.~C., J.~Doe, and J.~Q. Public.
+\newblock 2002.
+\newblock The futility of everything.
+\newblock The Journal of No Science At All 8:56--57.
+
+\end{thebibliography}
