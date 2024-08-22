@@ -1,6 +1,6 @@
 ---
-title: "Looping, Vectorization, and User-Defined Functions"
-author: "Justin French"
+title: "GitHub"
+author: "Matt Hewitt"
 date: "`r Sys.Date()`"
 output: word_document
 ---
@@ -9,262 +9,102 @@ output: word_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## A Vectorization Pre-Game
 
-R supports vectorized operations natively, so you end doing them without thinking about it all the time. **Vectorization** is just the simultaneous execution of a task across multiple object elements. For example, if you were to multiply a numeric vector by a single constant, this is what happens:
-```{r}
+This is a starter guide for using GitHub, understanding its parts and features, and its integration with Program R to facilitate seamless group working and meeting of reproducibility standards. 
 
-  # Make a vector of numbers
-  vec <- c(4:44)
 
-  # Apply multiplication to all elements
-  vec * 2
+For starters, GitHub is the website on which you create a user account and manage all repository settings, and Git is the program that manages the local repositories on your separate machines. There has previously been some confusion as to what the difference between these terms were. 
 
-```
+As summered by some AI algorithm:
 
-This principle makes R very efficient from the user's point of view. It seems simple on the surface, but it actually gets pretty complicated when applied to more complex situations or more sophisticated objects.
-
-The proper sequence of ideas to tackle this is to begin with **sequential operations** before really diving into vectorized operations. So, that's the progression we will follow.
-
-## Looping
-
-**Looping** is the act of moving sequentially through a set of values of a a variable and repeatedly executing the same code with updated values of the variable. At least, that's what `for` loops do. It is an example of an **iterator** (an operation that repeats things), but it only considers the sequence of values you feed it. Other iterators consider different things. The basic syntax of an R `for` loop looks like this:
-```{r}
-
-  for(i in vec){ 
-    cat(i * 2, ' ')
-  }
-
-```
-
-A `for` loop begins with the `for`, then in parenthesis you specify an arbitrary variable name, provide an `in`, then tell it what vector to pull values of the variable from. You then open curly braces (`{ }`) and write the code sequence to be repeated inside. Anywhere the variable you specified for the loop shows up will have the value updated each time the loop runs.
-
-When you want to store succesive outputs of a loop in a single object you need to use an **accumulator**. This isn't a distinct code object, but more of a technique. For example, if I want to store all the outputs of our multiplication in a new vector I need to do this:
-```{r}
-  # Make an empty vector
-  vec2 <- c()
-
-  # Fill empty vector with values
-  for(i in vec){ 
-    vec2 <- c(vec2, i * 2)
-  }
-
-```
-
-Another important concept with loops is **nesting**, or putting one iterator inside another. The most common is a nested `for` loop. These are handy when you have to work across higher dimensional objects. For example, if we loop across a matrix we need to iterate over columns and then rows, or vice versa:
-```{r}
-
-  # Make a matrix
-  mat <- matrix(nrow = 5,
-                byrow = T,
-                data = c(0:24))
-
-  for(i in 1:nrow(mat)){
-    for(j in 1:ncol(mat)){
-      mat[i,j] <- mat[i,j]/5
-    }
-  }
-
-  mat
-
-```
-
-In the case above, the inner loop runs for every value within a single run of the outer loop. This has the effect of making loop start on a row, do all the columns, then move to the next row, and then run through all the columns again, and so on.
-
-We incorporated an  example of **soft coding** when we specified the vectors that each loop ran over. This is when you make a function learn some of the necessary values for it to run from the object you run it on. The `nrow()` and `ncol()` functions learn the dimensions of the matrix without you having to manually specify them.
-
-## While loops
-
-Another iterator that is under-appreciated by R users is the `while` loop. Instead of updating a value of something, it keeps the loop running until a condition is met. To write one, you need to know what has to happen for the loop to terminate. For example, if we want to see how high R can count in 3 seconds, we could write a `while` loop like this:
-```{r}
-
-  # Start the counter
-  i <- 0
+  "GitHub is a web-based platform that allows developers to create, store, and collaborate on software projects. It uses Git, an open-source version control software, to let multiple people make changes to code simultaneously. GitHub provides access control, bug tracking, and other features to help developers manage their projects."
   
-  # Get the stop time
-  stop <- Sys.time() + 3
-  
-  # Keep counting until time runs out
-  while(Sys.time() < stop){
-    i <- i + 1
-  }
+As you can imagine, this is a really powerful tool in a world or remote workers and complex project structures by allowing everyone to stay up to date with the latest version of documents or analysis code. It is also useful for working on the same project on multiple machines, even for just one person, because it allows you to keep all your files up to date across machines.
 
-  # Print the result
-  i
+Another power feature of Git, kinda the reason why it was made, is that it tracks and controls versions of files through time. If a bug gets introduced into a file, or you are just curious what a past version of a file looked like, you are able to essentially go back in time and continue working off a past version. It tracks what changes are made, who they are made by, and when they are saved. A very useful feature when many people are working on the same project. 
+
+# What you will need to get set up
+
+## GitHub
+
+To get started, you will need to set up a user account on GitHub's website (https://github.com/signup). It will require that you verify your email address, so be sure you use an email you have access to. 
+
+Once you have an account set up, navigate to the Git download website (https://git-scm.com/downloads) and select your operating system. I do not use a macOS, so if you are using a mac book, it looks like you will need to first install a third party program that will then install Git. If you are using a Windows OS, you will want to download the '64-bit Git for Windows Setup' program. 
+
+Once the download is done, work through the instillation prompts. There are ~20 different options and you can just accept all the defaults. 
+
+This gets us all set up with Git and GitHub. 
+
+## R & RStudio
+
+If you have made it to this point in R Bootcamp I think it's safe to assume that you already have R and R Studio installed on your computer. 
+
+However, for those of you who are joining us just for today, you will need to download and install these programs. 
+At this website you can download both R and R Studio https://posit.co/download/rstudio-desktop/. 
+
+You will need to install Program R first, then download R Studio second. From what I remember, you can just accept all the defaults. 
+
+
+# Exploring version controlled repository structure
+
+Lets explore the structure of Git repositories. 
+
+In the image below you can see that there are two levels of organization. The **GitHub** level is the central repository that serves at the common source of all shared information. It is the top level where all users and developers send their updates and where they get updates from others.\
+The next level down is the **User** level. The 4 User boxes represent the local repositories on peoples individual computers. You could think of these as four computers that a single person work's on for their job, or it could represent four different users all working on the same project. \
+
+
+
+```{r, echo=FALSE, out.width=700, out.height= 400, fig.cap="A nice image."}
+knitr::include_graphics("figures/github_structure.png")
 ```
+\
+Fig 1
+\
 
-You can make a `while` loop stop on an event that may not occur at a pre-specified time or sequence. For example, if you want the loop to continue until a certain value comes up, you could do this:
-```{r}
+Another cool aspect of Git is that you can split a repository into multiple branches. In the image below I have written out a 'Main' and a 'Dev' branch. The concept of a branch is splitting a repository into multiple identical versions of itself, and working on the two versions separately. The idea behind having a Main and Dev branch (which stands for development) is that all users can use the files or programs on the main branch while developers continue to tweak features or other functions on the Dev branch. When developers are building or designing new features it often leaves a project in a state that does not work. Therefore, they work in the Dev branch until the feature is fully operational then 'merge' the head of the Dev branch to the head of the Main branch to then make the new feature available to users. You can think of the two branches as working in parallel and periodically merging and splitting. 
 
-  # Set a start "time"
-  t <- 0
 
-  # How many draws to get 15?
-  while(i != 15){
-    i <- rpois(n = 1, lambda = 5)
-    t = t + 1
-  }
-
+```{r, echo=FALSE, out.width=700, out.height= 300, fig.cap="A nice image."}
+knitr::include_graphics("figures/git_branch_merge.png")
 ```
+\
+Fig 2
+\
 
-### Logical comparisons
+# Operating within the system
 
-Logical comparisons are a special set of functions in R that only return `TRUE` or `FALSE`. AS you can see above, we used one in our `while` loop. The logical comparisons are as follows: `<`, `>`, `<=`, `>=`, `==`,`!=`, and `%in%`. They all look to see if the relationship between what is on the left side of the opperator holds with whatever is on the right. The `while` loop will run until the comparison returns a `FALSE`.
+The procedure for operating within this system has some good rules of thumb.\
+If you are the only person working within a repository, this is kinda irreverent, but that also kinda defeats the purpose of using git in the first place!
+\
+So assuming there are multiple computers (weather that be different users or one person on multiple computers) editing a repository, there are some practices to follow to keep yourself out of trouble and causing problems in the system.
+\
+Every time you open a Git monitored repository you should first 'pull' from the remote repository. This is asking your computer to look in the remote repository for any updates, or differences between your local repository and remote repository and to bring those updates down to your local repository. By doing this you ensure that you are working on the most up to date version of the documents/files.\
+It is important to note that you would need to 'pull' from each branch in the repository you plan on working in. If you are in the Main branch when you 'pull' Git will not get any changes from the 'Dev' branch and vice versa. \
+\
+After you 'pull', its Full steam ahead!\
+\
+Once you are finished with what you plan on working on and are headed home for the day, you need to follow a few steps.\
+First you will need to commit the changes you made to your local repository. When you edit and save files within your local repository the changes will be visible imitatively when you save, but Git won't reflect those changes until you commit them. This makes sure that you are happy with the changes you made to the files before they are recognized by Git. When committing your changes you have to provide a short commit message. Usually less than 10 words this message should be a description of what you changed in the files you are committing. Git will attach your commit message to the commit for you to reference later, and for other users to see what you have been changing.\
+Once you have committed your work to your local repository, you will 'push' your work. This command sends your updates to the remote repository for other users to incorporate into their local repositories.\
+Once you have committed and pushed, you can go home and have a beer. 
 
-For clarity, here are a few examples of logical comparisons:
-```{r}
+# Building a repository
 
-  4 < 5
-
-  4 > 5
-  
-  4 == 5
-  
-  4 != 5
-  
-  4 %in% c(3,6,4,7)
-
-```
-The double-equal differentiates the logical comparison from assigning a value to an argument in a function. 
-
-## Vectorized Operations
-
-While a lot of R objects have intrinsic vectorized methods (e.g. a vector being multiplied by a number), you often need to write custom code to do vectorized operations for more complex stuff.
-
-This is accomplished with the `apply()` family of functions. Each of these takes an input object and applies a prespecified function to each element of it *simultaneously*. The most basic `apply` statement is just `apply()`. It is intended to run on arrays, matrices, and data frames (i.e., 2-dimensional objects). For example, if we wanted to see what the data type was for each column of a data frame, we could use the `typeof()` function on the data frame with an `apply()` statement:
-```{r}
-
-  # Uses mtcars data frame
-  apply(X = mtcars,   # Specify data object
-        MARGIN = 2,   # Rows (1) or Columns (2)?
-        FUN = typeof) # Specify function
-
-```
-We could have accomplished the same task with a `for` loop, but it would have taken 4-5 lines of code. Anything a vectorized operator can do could be accomplished with a loop. The main benefit of `apply` statements is compactness of the code. In previous versions of R, vectorized statements had a clear speed advantage. However, that is largely academic in modern R releases; the difference is usually negligible.
-
-There is a variety of apply functions to suit different purposes. The most common variants are `lapply()`, which works on lists, and `sapply()` which simplifies the output from working on a list.
-
-### An advanced example
-
-Remember from yesterday that we are automotive engineers who are very concerned with fuel economy. However, our cheap supervisors will only let us measure one criterion about a vehicle to estimate it's fuel economy. We have to figure out which single attribute of a vehicle best predicts fuel economy. Fortunately, we have the `mtcars` data set to use for this. We'll fit 3 models and store their outputs in a list, then `apply` the `AIC()` function to determine which has the lowest score:
-```{r}
-
-  # Make a list to hold models
-  modList <- list()
-
-  # First model
-  modList[['mod.disp']] <-      # Make it a named element
-    lm(mpg~disp, data = mtcars) # Fit the model
-
-  # Second model
-  modList[['mod.cyl']] <-       # Make it a named element
-    lm(mpg~cyl, data = mtcars)  # Fit the model
-  
-  # Third model 
-  modList[['mod.wt']] <-        # Make it a named element
-    lm(mpg~wt, data = mtcars)   # Fit the model
-  
-```
-
-Now that we have a bunch of models, let's figure out how to get the AIC score of all 3 as a vector. We need to follow a set of steps to decide what all is needed:
-
-- Step 1: What function am I gonna use on each element and what arguments does it have?
-
-- Step 2: What is the object structure of the input and what is the desired output? Which `apply` statement is correct to accomplish this? If it isn't a matrix, data frame, or some other array, you can't use `apply()`. If the input is a list, you need `lapply()` or `sapply()`. If you want the output as a list, `lapply()` is the way to go. If you want the output simplified to an easier object to work with, use `sapply()`.
-
-Our input is a list, and we want a vector as the output. That means we should try `sapply()`:
-```{r}
-
-  sapply(X = modList,
-         FUN = AIC)
-
-```
-
-## Writing Your Own Functions
-
-All a function is is a block of code that take a certain input, does a certain task with it, at returns a certain output. Calling it a function just means you gave it a name. This is actually very easy to do. The basic syntax is as follows:
-```{r eval=FALSE}
-
-  myFunction <- function(arg1, arg2 = FALSE){
-    internalThing <- arg1 < 9
-    return(internalThing == arg2)
-  }
-
-  
-
-```
-
-Like any R obect (which functions are), you start by assigning it to a name. You then open the `function()` function and specify what the arguments of the function will be. If you want one to have a default value, you just set it equal to something. Once you are done setting arguments inside the parenthesis, you open curly braces and write code that uses the arguments as variables. Any information that your code needs should be specified in the arguments (i.e., the code should be self-contained). At the end of the code, you need to use the `return()` function to specify what your function will provide as output. The guts can get quite complicated, but all functions follow this design.
-
-Let's write a function that performs our AIC comparison on a list of models. we'll start simple, but make it progressively fancier. For now, let's just make it do exactly what our initial version did:
-```{r}
-
-  aicComp <- 
-    function(modList){       # Specify input argument
-      res <- sapply(modList, # Use the argument in func.
-                    AIC)     # Specify the function
-      return(res)            # Return the output
-    }
-
-  aicComp(modList = modList) # Run the function
-
-```
-
-This is a lot of extra code to do what we accomplished with one line earlier. How about we make our function produce a whole table representing our AIC comparison in a way we could use for our paper/thesis/dissertation?
-
-```{r}
-
- aicComp <- 
-    function(modList){       # Specify input argument
-      modName <- names(modList)
-      
-      nCovs <- sapply(modList,
-                      function(x){
-                        length(x$coefficients)-1
-                      })
-      
-      modAIC <-sapply(modList, AIC) 
-      
-      modR2 <- sapply(modList,
-                      function(x){
-                        summary(x)$r.squared
-                      })
-      
-      res <- data.frame(modName = modName,
-                        covariates = nCovs,
-                        AIC = modAIC,
-                        R2 = modR2
-                        )
-      
-      rownames(res) <- 1:nrow(res) # Set the rownames attribute
-      
-      return(res)            # Return the output
-    }
-
-  aicComp(modList = modList) # Run the function
-  
-```
+To create a new repository, you will start on the GitHub website.\
+Lets practice with creating our own test repository.\
+\
+\
+First, login to your GitHub account (if you aren't already), and naviagte to the home page. 
+Somewhere on the home page there is a box in the middle of the page dedicated to creating new repositories. You will need to give your new repository a name, I'll do 'Test', and it gives you the option of making this repository public or private. For our test example we can make it private.\
+\
+Congrats! You made your first repository!\
+\
+Lets add our first file to our new repository. It is customary, and very useful, to always have a 'README' file in your repository. the README file will contain information about what this repository is for, what is contained within it, and what the structure is. To add a README file, which is just a .txt file named README.txt, lets click on the README button under the quick set up menu. 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Integrating R and Git
 
 
 
