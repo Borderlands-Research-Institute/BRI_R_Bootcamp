@@ -99,14 +99,13 @@ Somewhere on the home page there is a box in the middle of the page dedicated to
 \
 Congrats! You made your first repository!\
 \
-Lets add our first file to our new repository. It is customary, and very useful, to always have a 'README' file in your repository. the README file will contain information about what this repository is for, what is contained within it, and what the structure is. To add a README file, which is just a .txt file named README.txt, lets click on the README button under the quick set up menu. 
-
-
-
+Lets add our first file to our new repository. It is customary, and very useful, to always have a 'README' file in your repository. the README file will contain information about what this repository is for, what is contained within it, and what the structure is. To add a README file, which is just a file with some text named README.md, lets click on the README button under the quick set up menu. This will bring up an editing window for your new README file. Write something along the lines of 'My README file. This is my first repository!!' into the window and click commit changes. As mentioned above, this will prompt you to write a commit message. Enter something like 'Adding README file' into the window and again click commit changes. You have now added a file to your repository through the GitHub webpage.\
 
 # Integrating R and Git
 
-
+To have Git track files within an R working framework, the best coerce of action is to create a repository containing an R project and all your scripts/files.\
+\
+Let's clone our test repository to our computers. As it currently sits, our new repository is only on GitHub. To clone a repository open Rstudio, it doesn't matter if it is an existing project, and under the `File` button in the top left click `New Project...`. In the pop-up window click `Version Control`, and then `GIT`. Now we need to go back to the GitHub website and click the green `<> Code` button and copy the web address there. Paste the web address into the 
 
 
 
