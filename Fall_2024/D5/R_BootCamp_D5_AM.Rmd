@@ -16,32 +16,42 @@ ipak <- function(pkg){
   sapply(pkg, require, character.only = TRUE)
 }
 
-ipak(c('shiny','shinythemes','shinydashboard'))
+ipak(c('shiny','shinythemes','shinydashboard','beepr'))
 
 
 ```
 
-##    Shiny Structure
+Welcome to a help/info guide for R shiny!\
+\
+R shiny is a package for program R that allows you to build applications with an HTML front end, and an R backend. That means that the portion of the app that a user sees is built using bits of HTML code pre-packaged into R functions that you can use to build user interfaces (UI). The back end of a shiny app, or server, operates using R code. It is a super useful tool that allows you to bring complex data processing or other complex operations to folks that use the app. 
 
-Shiny apps will all have the same 3 parts, some may have MUCH more, but all will have these three basic parts. 
+I started learning about shiny with the intention of having a front end interface that allows technicians to enter data to  Borderlands Research Institute's (BRI) data warehouse, an Amazon Web Service (AWS) web hosted PostgreSQL relational database, without learning how to code in R or the need to interact with the BRI warehouse.\
+
+These ambitions led me to build two applications. A bear project management app where members of the bear team, students and technicians, can view and upload data, manage some basic inventory (collars, inReach devices, cameras), and even view properties and collar data on an interactive map.\
+The other is an application intended to ease the workload for camera trap projects. It integrates Microsoft's open source megadetector image recognition model to identify whether or not there is an animal in a photo, and a user interface for technicians to identify detections to species. After processing, the data is submitted to the BRI data warehouse with photos being stored in the BRI AWS S3 bucket. Another web hosted data storage system that works perfect for large data types.\
+
+
+#    Shiny Structure
+
+Shiny apps will all have these same 3 parts, some may have MUCH more, but all will have these three basic parts. 
 
 ### Global
 
-This part of the app is intended for you to 'get things set up'. This is where you would load all the necessary packages, load data, connect to databases, source other files/scripts, any any other pieces of information your app needs to operate. This is usually not needed for simple apps, but can be extensive in larger ones. 
+This part of the app is intended for you to 'get things set up'. This is where you would load all the necessary packages, load data needed for app operation, connect to databases, source other files/scripts, set up reactive objects, and any other pieces of information your app needs to operate. This section is usually not very large for simple apps, but can be extensive in larger ones. 
 
 ### UI (User Interface)
 
-This is the portion of the app that the user actually sees and interacts with. It can be as specific or as general as needed, usually very specific for basic apps and general for more complicated ones. If you do not need things in the UI to change while the app is being used, all UI structure can be built in the UI portion of the code. However; if the presence of things, such as drop down menus or tables, is dependent on inputs from the user, then that portion of the UI will end up being built in the Server portion of the code. 
+This is the portion of the app the user actually sees and interacts with. It can be as specific or as general as needed. For apps with little function or simple layouts, all layouts can be specified in the **UI**. But if you are planning on having a very dynamic layout, only the bare bones of the layout would be specified in the **UI**, and all other dynamic parts will be built in the **Server** file. 
 
-There are many packages that provide pre-built layouts, my favorite is shiny dashboard. Think of it as base R graphics and ggplot2, the base graphics work, but ggplot tends to be a lot prettier and more flexible. Shiny dashboard has some great resources for helping you build intuitive and aesthetically pleasing UI's (https://rstudio.github.io/shinydashboard/). 
+There are many pre designed layouts available to start from. There are a few that come with the shiny package (see below), but there are some other packages that provide more layouts, my favorite is shiny dashboard. Think of it as base R graphics and ggplot2, the base graphics work, but ggplot tends to be a lot prettier and more flexible. Shiny dashboard has some great resources for building intuitive and aesthetically pleasing **UI**'s (https://rstudio.github.io/shinydashboard/). 
 
-There is a structured way that UI's are built. We will use the `sidebarLayout()` layout further down in this document. Here are some examples of shiny's default layouts:\
+There is a structured way that **UI**'s are built. We will use the `sidebarLayout()` layout for an example further down in this document. Here are some examples of shiny's default layouts:\
 ```{r, echo=FALSE, out.width=700, out.height= 300, fig.cap="A nice image."}
 knitr::include_graphics("figures/shiny-layouts.png")
 ```
 \
 
-Within the sections of these layouts (or just a blank page, if you choose to go that route) there is a structure for placing items on the page. Items include anything, user inputs, outputs, tables, figures, boxes, titles, literally anything you want to place on the page. The method for 'mapping' where items are placed follow this structure:\
+Within the sections of these layouts (or just a blank page, if you choose to go that route) there is a structure for placing elements on the page. Elements can include inputs elements, titles, boxes, or outputs spots in which to display things like photos, tables, or figures. The method for 'mapping' where items are placed follow this structure:\
 ```{r, echo=FALSE, out.width=700, out.height= 300, fig.cap="A nice image."}
 knitr::include_graphics("figures/bootstrap-layout.png")
 ```
@@ -51,19 +61,250 @@ This graphic is a custom made layout, not one of the preset layouts through shin
 
 You can see the center portion of the code has two `column()`'s within the `fluidRow()`. These correspond to the Side and Main portions of the layout on the right. The first `column()` is of width 4, and the second `column()` is of width 8, which add up to the total width of 12 to fill the width of the page. It isn't shown explicitly in this figure, but the width of each section is 12. So even though the Side section is only of with 4 when looking at the entire page, when we start placing elements within the section, we have a width of 12 to work with again. 
 
-The height of the different sections is dictated by what elements you place within each `column()`. If you ran this example code here, all three `fluidRow()`'s would be the same height.
+The height of the different sections is dictated by what elements you place within each `column()`. If you ran this example code here, all three `fluidRow()`'s would be the same height. The hight of Main/Side are exaderated for effect. 
+
+
+Here are some examples of input elements in a **UI**:
+```{r}
+
+ 
+    ## Global -------------------------------------------------- Create a reactive value to use in the server 
+
+
+    ## UI ------------------------------------------------------ Create User Interface layout
+ui <- fluidPage(
+
+    # Application title
+    titlePanel("Input elements"),
+    br(),br(),
+
+    # Sidebar with a slider input for number of bins 
+    fluidRow(
+      column(3, 
+             actionButton('button','Action Button'),
+             radioButtons('radiobuttons','Radio Buttons',choices = c('a','b','c'))),
+      column(3, 
+             selectInput('selectinput','Select Input',choices = c('a','b','c')),
+             checkboxInput('checkbox','Check Box Input')),
+      column(3, 
+             checkboxGroupInput('cbgi','Check Box Group Input',choices = c('a','b','c')),
+             sliderInput('slider','Slider Input',0,10,5)),
+      column(3, 
+             textInput('text','Text Input',value = ''),
+             numericInput('numeric','Numeric Input',value = ''))
+    ),
+    fluidRow(
+      column(3,
+             textOutput('button_output'),
+             textOutput('radio_output')),
+      column(3,
+             textOutput('select_output'),
+             textOutput('checkbox_output')
+             ),
+      column(3,
+             textOutput('cbgi_output'),
+             textOutput('slider_output')
+             ),
+      column(3,
+             textOutput('text_output'),
+             textOutput('numeric_output')
+             )
+    )
+    
+    )
+
+    ## Server -------------------------------------------------- Define Server logic
+server <- function(input, output) {
+
+  
+  output$button_output <- renderText(as.character(input$button))
+  output$radio_output <- renderText(input$radiobuttons)
+  output$select_output <- renderText(input$select_input)
+  output$checkbox_output <- renderText(input$checkbox)
+  output$cbgi_output <- renderText(input$cbgi)
+  output$slider_output <- renderText(input$slider)
+  output$text_output <- renderText(input$text)
+  output$numeric_output <- renderText(input$numeric)
+    
+  
+   
+}
+
+    ## --------------------------------------------------------- Run the application 
+shinyApp(ui = ui, server = server)
+
+
+
+```
+
 
 
 ### Server
 
-This is where the magic happens! The **Server** file is where all processes and operations live that dictate the behavior of your app. The app will continuously be observing the server file and will run its different portions given different user inputs. 
+This is where the magic happens! The **Server** file is where all processes and operations live that dictate the behavior of your app. The app will continuously be observing the **server** file and will run its different portions given different user inputs. 
 
-There are two parts, essentially list objects, that live underneath the operations of the server; the input and output. The input object is where all element input values live. Examples of input elements are `textInput()`, `selectInput()`, `actionButton()`, `numericInput()`, and `dateInput()`. These are very handy input functions that create elements users can interact with to input data. 
-
+There are two parts, essentially list objects, that live underneath the operations of the **server**; the input and output objects. The input object is where all input element values live. Examples of input elements are `textInput()`, `selectInput()`, `actionButton()`, `numericInput()`, and `dateInput()`. These are very handy input functions that create elements users can interact with to input data.\
 
 When you create an element in the **UI** (or wherever you create the element) you assign it an inputid. This id, or tag, will be how you access the value of, or make functions observe, different input elements. 
 
-A major part of how shiny operates is by *observing* different portions of the **Server** file. There are many functions that dictate how this works, but some of the most common ones are `observe()` and `observeEvent()`. The `observe()` function tells R to continuously run the code within it. I don't entirely understand how R knows when or how often to run all the `observe()` functions within the **Server** file, but somehow it gets it right. The code within `observeEvent()` functions will only be run when a specific event happens. 
+A major part of how shiny operates is by *observing* different portions of the **Server** file. There are a few functions that dictate how this works, but some of the common ones are `observe()` and `observeEvent()`. The `observe()` function tells R to continuously run the code within it. I don't entirely understand how R knows when or how often to run all the `observe()` functions within the **Server** file, but somehow it gets it right. The code within `observeEvent()` functions will only be run when input elements, reactive values, or other elements that change are changed. `observeEvent()`'s can be programmed to  observe one or more elements. Once triggered, the code within them is run.\
+
+
+\newpage
+#    Shiny Function
+
+The App will run these pieces in a particular order. It will start with the **Global** portion, then the **UI**, and lastly the **Server**. The **Global** and **UI** will only be run once, when the app starts up, but the server will constantly be observed and portions will be re-run given inputs from the user. 
+
+
+
+Lets look at a some examples:\
+```{r, eval=FALSE}
+    
+    ## Global -------------------------------------------------- Create a reactive value to use in the server 
+
+
+    ## UI ------------------------------------------------------ Create User Interface layout
+ui <- fluidPage(
+
+    # Application title
+    titlePanel("Simple observeEvent example"),
+    br(),br(),
+
+    # Sidebar with a slider input for number of bins 
+    fluidRow(
+      column(2, actionButton('button','Button')),
+      column(6, h2(textOutput('text_output_slot')))
+    )
+    
+    )
+
+    ## Server -------------------------------------------------- Define Server logic
+server <- function(input, output) {
+
+  observeEvent(input$button,{
+    
+     output$text_output_slot <- renderText(as.character(input$button))
+    
+  })
+  
+   
+}
+
+    ## --------------------------------------------------------- Run the application 
+shinyApp(ui = ui, server = server)
+
+
+    
+```
+
+
+This app uses one input, an action button with element id 'button', to trigger the single `observeEvent()` in the **Server** function that adds a number to `index()` and displays it in the output slot with the element id 'text_output_slot'.\
+You can make the `observeEvent()` observe 2 inputs like this:
+```{r, eval=FALSE}
+
+    
+    ## Global -------------------------------------------------- Create a reactive value to use in the server 
+
+
+    ## UI ------------------------------------------------------ Create User Interface layout
+ui <- fluidPage(
+
+    # Application title
+    titlePanel("Simple observeEvent example"),
+    br(),br(),
+
+    # Sidebar with a slider input for number of bins 
+    fluidRow(
+      column(2, actionButton('button','Button'),
+                actionButton('button2','Button2')),
+      column(6, h2(textOutput('text_output_slot')))
+    )
+    
+    )
+
+    ## Server -------------------------------------------------- Define Server logic
+server <- function(input, output) {
+
+  observeEvent({
+    input$button
+    input$button2
+    },{
+    
+     output$text_output_slot <- renderText(as.character(input$button+input$button2))
+    
+  })
+  
+   
+}
+
+    ## --------------------------------------------------------- Run the application 
+shinyApp(ui = ui, server = server)
+
+
+```
+
+
+We can also make a sort of reaction chain that when one `observeEvent()` is triggered, something changes inside it that triggeres another `observeEvent()`. Like this:
+```{r, eval=FALSE}
+
+      
+    ## Global -------------------------------------------------- Create a reactive value to use in the server 
+    index <- reactiveVal()
+    
+
+    ## UI ------------------------------------------------------ Create User Interface layout
+ui <- fluidPage(
+
+    # Application title
+    titlePanel("Simple observeEvent example"),
+    # adding blank rows to space some things out
+    br(),br(),
+
+    # Creating 2 action buttons and an output slot in which to put some text
+    fluidRow(                                         # start a fluid row
+      column(2,                                       # add a column of width 2
+             actionButton('button','Button'),         # add an action button with element id 'button'
+             actionButton('button2','Button2')),      # add a second action button with element id 'button2'
+      column(6,                                       # add a second column in this fluid row
+             h2(textOutput('text_output_slot'),       # add an output slot to display some text with element id 'text_output_slot'
+                   ))
+    )
+    
+    )
+
+    ## Server -------------------------------------------------- Define Server logic
+server <- function(input, output) {
+
+  # first observeEvent that observes 'button' and 'button2'
+  observeEvent({
+    input$button
+    input$button2
+    },{
+    # placing text in the output slot 'text_output_slot'
+    output$text_output_slot <- renderText(as.character(input$button+input$button2))
+    # updating the value of index()
+    index({input$button+input$button2})
+  })
+  
+  # the second observeEvent that observes index()
+  observeEvent(index(),{
+    
+    # playing a sound
+    beep(index())
+    
+  })
+   
+}
+
+    ## --------------------------------------------------------- Run the application 
+shinyApp(ui = ui, server = server)
+
+
+
+```
+
+
+Cool stuff, right?!
 
 
 
@@ -71,13 +312,7 @@ A major part of how shiny operates is by *observing* different portions of the *
 
 
 
-
-The App will run these pieces in a particular order. It will start with the **Global** portion, then the **UI**, and lastly the **Server**. The **Global** and **UI** will only be run once, when the app start up, but the server will constantly be observed and portions will be re-run given inputs from the user. 
-
-
-
-Lets look at a basic app. The following is the default example present in every new shiny file:
-
+Here is another example app. This one is the default example present in every new shiny file:\
 ```{r, eval=FALSE}
     ## Global -------------------------------------------------- Load packages
 library(shiny)
@@ -151,6 +386,154 @@ If we run this code, because it is a single file type app and it is already stru
 
 
 
+Here is an example:
+```{r, eval=FALSE}
+    
+    ## Global -------------------------------------------------- Create a reactive value to use in the server 
+index <- reactiveVal(0)
+
+    ## UI ------------------------------------------------------ Create User Interface layout
+ui <- fluidPage(
+
+    # Application title
+    titlePanel("Simple observeEvent example"),
+    br(),br(),
+
+    # Sidebar with a slider input for number of bins 
+    fluidRow(
+      column(2, actionButton('button','Button')),
+      column(6, h2(textOutput('text_output_slot')))
+    )
+    
+    )
+
+    ## Server -------------------------------------------------- Define Server logic
+server <- function(input, output) {
+
+  observeEvent(input$button,{
+    
+     output$text_output_slot <- renderText(as.character(input$button))
+    
+  })
+  
+   
+}
+
+    ## --------------------------------------------------------- Run the application 
+shinyApp(ui = ui, server = server)
+
+
+    
+```
+
+
+This app uses one input, an action button with element id 'button', to trigger the single `observeEvent()` in the **Server** function that adds a number to `index()` and displays it in the output slot with the element id 'text_output_slot'.\
+You can make the `observeEvent()` observe 2 inputs like this:
+```{r, eval=FALSE}
+
+    
+    ## Global -------------------------------------------------- Create a reactive value to use in the server 
+
+
+    ## UI ------------------------------------------------------ Create User Interface layout
+ui <- fluidPage(
+
+    # Application title
+    titlePanel("Simple observeEvent example"),
+    br(),br(),
+
+    # Sidebar with a slider input for number of bins 
+    fluidRow(
+      column(2, actionButton('button','Button'),
+                actionButton('button2','Button2')),
+      column(6, h2(textOutput('text_output_slot')))
+    )
+    
+    )
+
+    ## Server -------------------------------------------------- Define Server logic
+server <- function(input, output) {
+
+  observeEvent({
+    input$button
+    input$button2
+    },{
+    
+     output$text_output_slot <- renderText(as.character(input$button+input$button2))
+    
+  })
+  
+   
+}
+
+    ## --------------------------------------------------------- Run the application 
+shinyApp(ui = ui, server = server)
+
+
+```
+
+
+We can also make a sort of reaction chain that when one `observeEvent()` is triggered, something changes inside it that triggeres another `observeEvent()`. Like this:
+```{r, eval=FALSE}
+
+      
+    ## Global -------------------------------------------------- Create a reactive value to use in the server 
+    index <- reactiveVal()
+    
+
+    ## UI ------------------------------------------------------ Create User Interface layout
+ui <- fluidPage(
+
+    # Application title
+    titlePanel("Simple observeEvent example"),
+    # adding blank rows to space some things out
+    br(),br(),
+
+    # Creating 2 action buttons and an output slot in which to put some text
+    fluidRow(                                         # start a fluid row
+      column(2,                                       # add a column of width 2
+             actionButton('button','Button'),         # add an action button with element id 'button'
+             actionButton('button2','Button2')),      # add a second action button with element id 'button2'
+      column(6,                                       # add a second column in this fluid row
+             h2(textOutput('text_output_slot'),       # add an output slot to display some text with element id 'text_output_slot'
+                   ))
+    )
+    
+    )
+
+    ## Server -------------------------------------------------- Define Server logic
+server <- function(input, output) {
+
+  # first observeEvent that observes 'button' and 'button2'
+  observeEvent({
+    input$button
+    input$button2
+    },{
+    # placing text in the output slot 'text_output_slot'
+    output$text_output_slot <- renderText(as.character(input$button+input$button2))
+    # updating the value of index()
+    index({input$button+input$button2})
+  })
+  
+  # the second observeEvent that observes index()
+  observeEvent(index(),{
+    
+    # playing a sound
+    beep(index())
+    
+  })
+   
+}
+
+    ## --------------------------------------------------------- Run the application 
+shinyApp(ui = ui, server = server)
+
+
+
+```
+
+
+Cool stuff, right?!
 
 
 
