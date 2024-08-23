@@ -124,11 +124,10 @@ paste('Hello World')
 ```
 \
 then save the file as `Rscript' in the repository and commit the file in the Git tab.\
-Lets switch back to the main branch by selecting main in the drop down menu, and notice how the R script we just made is not there. Switch back and forth between the Dev and main branches a few times to get accustomed to the operation. 
-
-Merging branches `git merge Dev`
-
-
+Lets switch back to the main branch by selecting main in the drop down menu, and notice how the R script we just made is not there. Switch back and forth between the Dev and main branches a few times to get accustomed to the operation and notice your new R script appear and disappear.\
+\
+Now lets merge the two branches. You would do this when whatever feature you were working on in the Dev branch is completed and ready to be added to the workflow on the main branch.\
+To merge branches, click on the `Terminal` tab in the bottom left pane of the R Studio. To merge add the feature from the Dev branch to the main branch, make sure you are currently in the main branch, and type `git merge Dev` into the terminal. Sometimes you will need to update the Dev branch with the changes being made in the main branch, to do this make sure you are in the Dev branch and type `git merge main` into the terminal. 
 
 
 
