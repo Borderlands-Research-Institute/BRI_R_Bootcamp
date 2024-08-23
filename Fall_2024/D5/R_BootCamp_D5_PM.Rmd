@@ -81,7 +81,7 @@ So assuming there are multiple computers (weather that be different users or one
 Every time you open a Git monitored repository you should first 'pull' from the remote repository. This is asking your computer to look in the remote repository for any updates, or differences between your local repository and remote repository and to bring those updates down to your local repository. By doing this you ensure that you are working on the most up to date version of the documents/files.\
 It is important to note that you would need to 'pull' from each branch in the repository you plan on working in. If you are in the Main branch when you 'pull' Git will not get any changes from the 'Dev' branch and vice versa. \
 \
-After you 'pull', its Full steam ahead!\
+After you 'pull', its full steam ahead!\
 \
 Once you are finished with what you plan on working on and are headed home for the day, you need to follow a few steps.\
 First you will need to commit the changes you made to your local repository. When you edit and save files within your local repository the changes will be visible imitatively when you save, but Git won't reflect those changes until you commit them. This makes sure that you are happy with the changes you made to the files before they are recognized by Git. When committing your changes you have to provide a short commit message. Usually less than 10 words this message should be a description of what you changed in the files you are committing. Git will attach your commit message to the commit for you to reference later, and for other users to see what you have been changing.\
@@ -99,7 +99,7 @@ Somewhere on the home page there is a box in the middle of the page dedicated to
 \
 Congrats! You made your first repository!\
 \
-Lets add our first file to our new repository. It is customary, and very useful, to always have a 'README' file in your repository. the README file will contain information about what this repository is for, what is contained within it, and what the structure is. To add a README file, which is just a file with some text named README.md, lets click on the README button under the quick set up menu. This will bring up an editing window for your new README file. Write something along the lines of 'My README file. This is my first repository!!' into the window and click commit changes. As mentioned above, this will prompt you to write a commit message. Enter something like 'Adding README file' into the window and again click commit changes. You have now added a file to your repository through the GitHub webpage.\
+Lets add our first file to our new repository. It is customary, and very useful, to always have a 'README' file in your repository. The README file will contain information about what this repository is for, what is contained within it, and what the structure is. To add a README file, which is just a file with some text named README.md, lets click on the README button under the quick set up menu. This will bring up an editing window for your new README file. Write something along the lines of 'My README file. This is my first repository!!' into the window and click commit changes. As mentioned above, this will prompt you to write a commit message. Enter something like 'Adding README file' into the window and again click commit changes. You have now added a file to your repository through the GitHub webpage.\
 
 # Integrating R and Git
 
@@ -128,12 +128,4 @@ Lets switch back to the main branch by selecting main in the drop down menu, and
 \
 Now lets merge the two branches. You would do this when whatever feature you were working on in the Dev branch is completed and ready to be added to the workflow on the main branch.\
 To merge branches, click on the `Terminal` tab in the bottom left pane of the R Studio. To merge add the feature from the Dev branch to the main branch, make sure you are currently in the main branch, and type `git merge Dev` into the terminal. Sometimes you will need to update the Dev branch with the changes being made in the main branch, to do this make sure you are in the Dev branch and type `git merge main` into the terminal. 
-
-
-
-
-
-
-
-
 
