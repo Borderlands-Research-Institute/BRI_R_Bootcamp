@@ -21,31 +21,31 @@ ipak(c('shiny','shinythemes','shinydashboard','beepr'))
 
 ```
 
-Welcome to a very basic help/info guide for R shiny!\
+Welcome to a very basic help/info guide for R Shiny!\
 \
-R shiny is a package for program R that allows you to build applications with an HTML front end, and an R backend. That means that the portion of the app that a user sees is built using bits of HTML code pre-packaged into R functions that you can use to build user interfaces (UI). The back end of a shiny app, or server, operates using R code. It is a super useful tool that allows you to bring complex data processing or other complex operations to users without them needing to understand whats happening. 
+R shiny is a package for program R that allows you to build applications with an HTML front end, and an R backend. This means that the portion of the app a user sees is built using bits of HTML code pre-packaged into R functions which you use to build user interfaces (UI). The back end of a Shiny app, or server, operates using R code. It is a super useful tool that allows you to bring complex data processing or other complex operations to users without them needing to understand what's happening. 
 
-I started learning about shiny with the intention of building a front end interface that allows technicians to enter data to  Borderlands Research Institute's (BRI) data warehouse, an Amazon Web Service (AWS) web hosted PostgreSQL relational database, without learning how to code in R or the need to interact with the BRI warehouse.\
+I started learning about Shiny with the intention of building a front end interface that allows technicians to enter data to  Borderlands Research Institute's (BRI) data warehouse, an Amazon Web Service (AWS) web hosted PostgreSQL relational database, without learning how to code in R or the need to interact with the BRI warehouse.\
 
 These ambitions led me to build two applications. A bear project management app where members of the bear team, students and technicians, can view and upload data, manage some basic inventory (collars, inReach devices, cameras), and even view properties and collar data on an interactive map.\
-The other is an application intended to ease the workload for camera trap projects. It integrates Microsoft's open source megadetector image recognition model to identify whether or not there is an animal in a photo, and a user interface for technicians to identify detections to species. After processing, the data is submitted to the BRI data warehouse with photos being stored in the BRI AWS S3 bucket. Another web hosted data storage system that works for large data types.\
+The other is an application intended to ease the workload for camera trap projects. It integrates Microsoft's open source megadetector image recognition model to identify whether or not there is an animal in a photo, and a user interface for technicians to identify detections to specific species. After processing, the data is submitted to the BRI data warehouse with photos being stored in the BRI AWS S3 bucket, another web hosted data storage system that works for large data types.\
 
 
 #    Shiny Structure
 
-Shiny apps will all have these same 3 parts, the **Global**, **UI**, and **Server**. Some apps may have a lot more going on around these, but all will have these three basic parts. 
+Shiny apps will all have these same 3 parts, the **Global**, **UI**, and **Server**. Some apps may have a lot more going on around these, but all apps will have these three basic parts. 
 
 ### Global
 
-This part of the app is intended for you to 'get things set up'. This is where you would load all the necessary packages, load data needed for app operation, connect to databases, source other files/scripts, set up reactive objects, and any other pieces of information your app needs to operate. This section is usually not very large for simple apps, but can be extensive in larger ones. 
+This part of the app is intended for you to 'get things set up'. This is where you load necessary packages, load data needed for app operation, connect to databases, source other files/scripts, set up reactive objects, and load any other pieces of information your app needs to operate. This section is usually not very large for simple apps, but can be extensive in larger ones. 
 
 ### UI (User Interface)
 
-This is the portion of the app the user actually sees and interacts with. It can be as specific or as general as needed. For apps with little function or simple layouts, all layout elements can be specified in the **UI**. But if you are planning on having a very dynamic layout, only the bare bones of the layout would be specified in the **UI**, and all other dynamic parts will be built in the **Server** file. Under the hood the **UI** is built using HTML, the coding language used to build websites. If you are curious, right click on any webpage and hit the 'inspect' button in the menu and it will show you all the underlying HTML. It's really gross!! Shiny is cool because it allows you to wrangle the flexibility and power of HTML, without needing to know how to code in HTML. Shiny provides you with a surprisingly comprehensive set of functions that build HTML layouts as a result so you don't have to.
+This is the portion of the app the user actually sees and interacts with. It can be as specific or as general, as needed. For apps with little function or simple layouts, all layout elements can be specified in the **UI**. But if you are planning on having a very dynamic layout, only the bare bones of the layout would be specified in the **UI**, and all other dynamic parts will be built in the **Server** file. Under the hood the **UI** is built using HTML, the coding language used to build websites. If you are curious, right click on any webpage and hit the 'inspect' button in the menu and it will show you all the underlying HTML. It's really gross!! Shiny is cool because it allows you to wrangle the flexibility and power of HTML, without needing to know how to code in HTML. Shiny provides you with a surprisingly comprehensive set of functions that build HTML layouts as a result so you don't have to.
 
-There are many pre designed layouts available to start from. There are a few that come with the shiny package (see below), but there are some other packages that provide more layouts, my favorite is shiny dashboard. Think of it as base R graphics and ggplot2, the base graphics work, but ggplot tends to be a lot prettier and more flexible. Shiny dashboard has some great resources for building intuitive and aesthetically pleasing **UI**'s (https://rstudio.github.io/shinydashboard/). 
+There are many pre designed layouts available to start from. There are a few that come with the Shiny package (see below), but there are some other packages that provide more layouts, of which, my favorite is Shiny dashboard. Think of it as base R graphics and ggplot2, the base R graphics work, but ggplot tends to be a lot prettier and more flexible. Shiny dashboard has some great resources for building intuitive and aesthetically pleasing **UI**'s (https://rstudio.github.io/shinydashboard/). 
 
-There is a structured way that **UI**'s are built. We will use the `sidebarLayout()` layout for an example further down in this document. Here are some examples of shiny's default layouts:\
+There is a structured way that **UI**'s are built. We will use the `sidebarLayout()` layout for an example further down in this document. Here are some examples of Shiny's default layouts:\
 ```{r, echo=FALSE, out.width=700, out.height= 300, fig.cap="A nice image."}
 knitr::include_graphics("figures/shiny-layouts.png")
 ```
@@ -53,7 +53,7 @@ knitr::include_graphics("figures/shiny-layouts.png")
 Fig 1
 \
 
-Within the sections of these layouts (or just a blank page, if you choose to go that route) there is a structure for placing elements on the page. Elements can include inputs elements, titles, boxes, or outputs spots in which to display things like photos, tables, or figures. The method for 'mapping' where items are placed follow this structure:\
+Within the sections of these layouts (or a blank page, if you choose to go that route) there is a structure for placing elements on the page. Elements can include inputs elements, titles, boxes, or output spots in which to display things like photos, tables, or figures. The method for 'mapping' where items are placed follow this structure:\
 ```{r, echo=FALSE, out.width=700, out.height= 300, fig.cap="A nice image."}
 knitr::include_graphics("figures/bootstrap-layout.png")
 ```
@@ -61,9 +61,9 @@ knitr::include_graphics("figures/bootstrap-layout.png")
 Fig 2
 \
 
-This graphic is a custom made layout, not one of the preset layouts through shiny as seen in Fig 1. The three sections in the R code on the left side (the three `fluidRow()`'s) correspond to the three rows on the example layout on the right (the Header, Side/Main, and Footer). The first `fluidRow()` that creates the Header section contains a `column()` function. Just as the names would suggest, `fluidRow()` creates rows, and `column()` creates columns. Because `column()` is nested within `fluidRow()` in this instance, it will create a single column of width 12 within the Header section. In this particular case, it is within `column()` that you would place elements to have them be displayed within the Header section. However, `column()` is not the only place you can put elements, you can place elements anywhere within this layout. But placing them within `column()` allows you to better control the structure. 
+This graphic is a custom made layout, not one of the preset layouts through Shiny as seen in Fig 1. The three sections in the R code on the left side (the three `fluidRow()`'s) correspond to the three rows on the example layout on the right (the Header, Side/Main, and Footer). The first `fluidRow()` that creates the Header section contains a `column()` function. Just as the names would suggest, `fluidRow()` creates rows, and `column()` creates columns. Because `column()` is nested within `fluidRow()` in this instance, it will create a single column of width 12 within the Header section. In this particular case, it is within `column()` that you would place elements to have them be displayed within the Header section. However, `column()` is not the only place you can put elements, you can place elements anywhere within this layout. But placing them within `column()` allows you to better control the structure. 
 
-You can see the center portion of the code has two `column()`'s within the `fluidRow()`. These correspond to the Side and Main portions of the layout on the right. The first `column()` is of width 4, and the second `column()` is of width 8, which add up to the total width of 12 to fill the width of the page. It isn't shown explicitly in this figure, but the width of each section is 12. So even though the Side section is only of with 4 when looking at the entire page, when we start placing elements within the section, we have a width of 12 to work with again. 
+You can see that the center portion of the code has two `column()`'s within the `fluidRow()`. These correspond to the Side and Main portions of the layout on the right. The first `column()` is of width 4, and the second `column()` is of width 8, which add up to the total width of 12 to fill the width of the page. It isn't shown explicitly in this figure, but the width of each section is 12. So even though the Side section is only of with 4 when looking at the entire page, when we start placing elements within the section, we have a width of 12 to work with again. 
 
 The height of the different sections is dictated by what elements you place within each `column()`. If you ran this example code here, all three `fluidRow()`'s would be the same height. The height of Main/Side are exaggerated for effect. 
 
@@ -142,7 +142,7 @@ There are two parts, essentially list objects, that live underneath the operatio
 
 When you create an element in the **UI** (or wherever you create the element) you assign it an inputid. This id, or tag, will be how you access the value of, or make functions observe, different input elements in the **Server**. The **Server** file can end up being VERY long depending on how complicated your app is, but only certain parts of it are run at one time. This
 
-A major part of how shiny operates is by *observing* different portions of the **Server** file. There are a few functions that dictate how this works, but some of the common ones are `observe()` and `observeEvent()`. The `observe()` function tells R to continuously run the code within it. I don't entirely understand how R knows when or how often to run all the `observe()` functions within the **Server** file, but somehow it gets it right. The code within `observeEvent()` functions will only be run when input elements, reactive values, or other elements that change are changed. `observeEvent()`'s can be programmed to  observe one or more elements. Once triggered, the code within them is run. This all means that there is no required structure for the server file. You can put `observeEvent()`'s that do different things anywhere in the file and it would run just fine. R is observing the entire file at one time, and just runs the ones that meet a certain condition. However, it helps with readability and trouble shooting to put `observeEvent()`'s that do similar things or are associated with one particular app function in the same place.\
+A major part of how Shiny operates is by *observing* different portions of the **Server** file. There are a few functions that dictate how this works, but some of the common ones are `observe()` and `observeEvent()`. The `observe()` function tells R to continuously run the code within it. I don't entirely understand how R knows when or how often to run all the `observe()` functions within the **Server** file, but somehow it gets it right. The code within `observeEvent()` functions will only be run when input elements, reactive values, or other elements that change are changed. `observeEvent()`'s can be programmed to  observe one or more elements. Once triggered, the code within them is run. This all means that there is no required structure for the server file. You can put `observeEvent()`'s that do different things anywhere in the file and it would run just fine. R is observing the entire file at one time, and just runs the ones that meet a certain condition. However, it helps with readability and trouble shooting to put `observeEvent()`'s that do similar things or are associated with one particular app function in the same place.\
 
 
 \newpage
@@ -225,7 +225,7 @@ shinyApp(ui = ui, server = server)
 
 
 We can also make a sort of reaction chain that when one `observeEvent()` is triggered, something changes inside that triggers another `observeEvent()`. 
-There is another cool shiny data object I'm going to use here also, called a reactive value. The functions used to make these type of objects are `reactiveVal()` and `reactiveValues()`. I believe  `reactiveVal()` can take the form of any R data type, but just a single one. The function `reactiveValues()` on the other hand can take multiple data objects and outputs something that acts like a list object. These shiny specific reactive objects differ from regular R objects in that they are able to be accessed and updated anywhere is the app. Just like in any R function, a variable assigned within an `observeEvent()` function will not be accessible outside the function. To be able to access data between `observeEvent()`'s, we need to use a reactive value. I use `reactiveVal()` in this example to make a reactive value called index that I update in the first `observeEvent()`, and use as an index in the second `observeEvent()`. As you can see, I actually used the **Global** section of this app too. You can create reactive values in the **UI** or in the **Server**. 
+There is another cool Shiny data object I'm going to use here also, called a reactive value. The functions used to make these type of objects are `reactiveVal()` and `reactiveValues()`. I believe  `reactiveVal()` can take the form of any R data type, but just a single one. The function `reactiveValues()` on the other hand can take multiple data objects and outputs something that acts like a list object. These Shiny specific reactive objects differ from regular R objects in that they are able to be accessed and updated anywhere is the app. Just like in any R function, a variable assigned within an `observeEvent()` function will not be accessible outside the function. To be able to access data between `observeEvent()`'s, we need to use a reactive value. I use `reactiveVal()` in this example to make a reactive value called index that I update in the first `observeEvent()`, and use as an index in the second `observeEvent()`. As you can see, I actually used the **Global** section of this app too. You can create reactive values in the **UI** or in the **Server**. 
 
 Like this:
 ```{r, eval=FALSE}
@@ -283,7 +283,7 @@ Cool stuff, right?!
 
 
 
-Here is our last example app. This one is the default example present in every new shiny file:\
+Here is our last example app. This one is the default example present in every new Shiny file:\
 ```{r, eval=FALSE}
     ## Global -------------------------------------------------- Load packages
     ## UI ------------------------------------------------------ Create User Interface layout
@@ -330,11 +330,11 @@ shinyApp(ui = ui, server = server)
 
 In all of these apps you can see the 3 basic parts. The ones we have seen so far are 'one file' apps. Meaning all portions of the application are housed in one file. Alternatively, you can split all the portions of this up into different files. Meaning, your **Global**, **UI** and **Server** portions will all be in their own .R file. 
 
-The **Global** portion of this app is super simple, we are just loading the 'shiny' package into our environment. 
+The **Global** portion of this app is super simple, we are just loading the 'Shiny' package into our environment. 
 
 The **UI** portion of this app actually has a little more going on. In all of the previous apps I just kinda threw everything onto a blank page with little structure. As you can see, this **UI** is just one big function called `fluidPage()` with a few other things happening inside. Phew!!
 
-So, lets break down whats happening in the `fluidPage()` function. There are many nested function within it, but the next immediate level down is `sidebarlayout()`. This is one of the pre-packaged base shiny layouts that has a side bar and main body areas we saw above. The two functions at the next level down are `sidebarPanel()` and `mainPanel()`. This is where you tell R what you want to put into each of these areas. In `sidebarPanel()` we have a `sliderInput()`, which creates a slider bar the user can move back and forth that we internally labeled as 'bins' (I'll explain what that means in a bit), gave it a title to display above the slider bar 'Number of bins:', restricted the values between 1 and 50, and set the initial value to 30. Inside the `mainPanel()` function we have `plotOutput()`, which, unlike an input function, just creates a spot something can be put later. In this case, this spot will only accept a plot. We gave this currently unoccupied spot an element id of 'distPlot'.
+So, lets break down whats happening in the `fluidPage()` function. There are many nested function within it, but the next immediate level down is `sidebarlayout()`. This is one of the pre-packaged base Shiny layouts that has a side bar and main body areas we saw above. The two functions at the next level down are `sidebarPanel()` and `mainPanel()`. This is where you tell R what you want to put into each of these areas. In `sidebarPanel()` we have a `sliderInput()`, which creates a slider bar the user can move back and forth that we internally labeled as 'bins' (I'll explain what that means in a bit), gave it a title to display above the slider bar 'Number of bins:', restricted the values between 1 and 50, and set the initial value to 30. Inside the `mainPanel()` function we have `plotOutput()`, which, unlike an input function, just creates a spot something can be put later. In this case, this spot will only accept a plot. We gave this currently unoccupied spot an element id of 'distPlot'.
 
 
 
