@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Spatial Packages in R: GIS done right
 
-The two most prominent R packages for spatial data are `sf` (fro vector data) and `terra` for raster data. Both packages utilize modern computational developments to make working woith spatial data easier, while reducing the intermediate steps to deal with common tasks. They have made coordinate reference systems, geoprocessing, and raster algebra much much simpler than previous packages, including other software packages (e.g., ArcMap and QGIS).
+The two most prominent R packages for spatial data are `sf` (for vector data) and `terra` for raster data. Both packages utilize modern computational developments to make working woith spatial data easier, while reducing the intermediate steps to deal with common tasks. They have made coordinate reference systems, geoprocessing, and raster algebra much much simpler than previous packages, including other software packages (e.g., ArcMap and QGIS).
 
 The s and f in `sf` stand for **simple features**. Simple features are actually an ISO standard data encoding for vector data. They are the guts behind most common vector data formats, including shapefiles. This makes the data more compact and easy to translate across platforms. This has the added benefit of turning vector files into data frames.
 
@@ -19,7 +19,7 @@ The `terra` package is the next evolution of the original raster data package, `
 
 ```{r eval=FALSE}
 
-  install.packages(c('sf','sfheaders','terra'))
+  # install.packages(c('sf','sfheaders','terra'))
 
 ```
 
@@ -354,10 +354,10 @@ Now that the names are easier, let's do a little raster processing to get them c
     terra::project(stack.temp,
                    terra::crs(dat.counties))
 
-  stack.temp <- 
-    terra::crop(stack.temp,
-                vect(dat.counties),
-                mask = TRUE)
+  # stack.temp <- 
+  #   terra::crop(stack.temp,
+  #               vect(dat.counties),
+  #               mask = TRUE)
   
   
   plot(stack.temp$t20200101)
